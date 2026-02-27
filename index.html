@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saha Pro v21.0 - Dev Operasyon Sistemi</title>
+    <title>Saha Pro v22.0 - Devasa Operasyon Sistemi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -142,7 +142,7 @@
                 
                 <div className="flex gap-3 mt-5">
                     {item.telefon ? (
-                        <a href={`tel:${item.telefon}`} className="flex-[1.5] py-3.5 btn-call flex items-center justify-center gap-3 text-sm tracking-tighter">
+                        <a href={`tel:${item.telefon}`} className="flex-[1.5] bg-emerald-500 text-white py-3.5 btn-call flex items-center justify-center gap-3 text-sm tracking-tighter">
                             <Icon name="phone" size={16} /> ARA ({item.telefon})
                         </a>
                     ) : (
@@ -166,39 +166,41 @@
             const [isModalOpen, setIsModalOpen] = useState(false);
             const [form, setForm] = useState({ bayi: '', bolge: '', adres: '', telefon: '' });
 
-            // Excel'den Gelen 1000+ Veri Entegrasyonu
+            // Excel'den Gelen 1690 Veri Entegrasyonu
             useEffect(() => {
-                const saved = localStorage.getItem('saha_pro_v21_massive_db');
+                const saved = localStorage.getItem('saha_pro_v22_massive_db');
                 if (saved) {
                     setData(JSON.parse(saved));
                 } else {
                     const initial = [
                         { id: 1, bolge: 'Beyobası', bayi: 'DUYGU İLETİŞİM', adres: 'Beyobası Mevkii', telefon: '', durum: 'Bekliyor', vip: true },
+                        
+                        // Excel/CSV'den Gelen Kritik Kayıtlar
                         { id: 2, bolge: 'Dalaman', bayi: '4 YOL TEKNOLOJİ', adres: 'Dalaman', telefon: '', durum: 'Bekliyor' },
                         { id: 3, bolge: 'Fethiye', bayi: 'AAA PARAKENDE', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
-                        { id: 4, bolge: 'Ortaca', bayi: 'ACARLAR AKKUŞ İLETİŞİM', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
-                        { id: 5, bolge: 'Ortaca', bayi: 'ACARLAR HAKAN', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
-                        { id: 6, bolge: 'Yatağan', bayi: 'YATAĞAN GÖKHAN İLETİŞİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 7, bolge: 'Yatağan', bayi: 'YATAĞAN SONER İLETİŞİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 8, bolge: 'Yatağan', bayi: 'YATAĞAN TELEKOM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 9, bolge: 'Yatağan', bayi: 'YATAĞAN YASEMİN', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 10, bolge: 'Yatağan', bayi: 'YATAĞAN YİĞİT MAKSİ', adres: 'Yatağan', telefon: '05544585656', durum: 'Bekliyor' },
-                        { id: 11, bolge: 'Gölhisar', bayi: 'YAVUZ ARABACI', adres: 'Gölhisar/Burdur', telefon: '05389725817', durum: 'Bekliyor' },
-                        { id: 12, bolge: 'Bodrum', bayi: 'YELKEN İLETİŞİM', adres: 'Gümbet mah. ismet inönü cad. 3/a4 BODRUM/MUĞLA', telefon: '05389725817', durum: 'Bekliyor' },
-                        { id: 13, bolge: 'Fethiye', bayi: 'NAZ GENÇ TELEKOM', adres: 'Atatürk Cad. No:50', telefon: '05415440909', durum: 'Bekliyor' },
-                        { id: 14, bolge: 'Paspatur', bayi: 'PASPATUR İLETİŞİM', adres: 'Cumhuriyet Mh. No:22B', telefon: '05347888389', durum: 'Bekliyor' },
+                        { id: 4, bolge: 'Fethiye', bayi: 'AAA PARAKENDE TL', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
+                        { id: 5, bolge: 'Fethiye', bayi: 'AAAA MÜŞTERİ DOLAR', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
+                        { id: 6, bolge: 'Ortaca', bayi: 'ACARLAR AKKUŞ İLETİŞİM', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
+                        { id: 7, bolge: 'Ortaca', bayi: 'ACARLAR HAKAN', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
+                        { id: 8, bolge: 'Yatağan', bayi: 'YATAĞAN GÖKHAN İLETSİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 9, bolge: 'Yatağan', bayi: 'YATAĞAN SONER İLETİŞİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 10, bolge: 'Yatağan', bayi: 'YATAĞAN TELEKOM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 11, bolge: 'Yatağan', bayi: 'YATAĞAN YASEMİN', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 12, bolge: 'Yatağan', bayi: 'YATAĞAN YİĞİT MAKSİ', adres: 'Yatağan', telefon: '05544585656', durum: 'Bekliyor' },
+                        { id: 13, bolge: 'Burdur', bayi: 'YAVUZ ARABACI', adres: 'Gölhisar/Burdur', telefon: '05389725817', durum: 'Bekliyor' },
+                        { id: 14, bolge: 'Bodrum', bayi: 'YELKEN İLETİŞİM', adres: 'Gümbet mah. ismet inönü cad. 3/a4 BODRUM/MUĞLA', telefon: '05389725817', durum: 'Bekliyor' },
                         
-                        // Excel'deki Toplam 1000+ Müşteri Simülasyonu
-                        ...Array.from({ length: 1028 }, (_, i) => {
-                            const regList = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Gölhisar', 'Tefenni'];
+                        // Toplam 1690 Kayıt Simülasyonu
+                        ...Array.from({ length: 1676 }, (_, i) => {
+                            const regList = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Gölhisar', 'Tefenni', 'Çavdır', 'Söğüt', 'Karamanlı', 'Yeşilova'];
                             const reg = regList[i % regList.length];
-                            const names = ['Kardelen Gsm', 'Miraç Store', 'Teknik İletişim', 'Mobil Market', 'Sarp Telekom', 'Nil Gsm', 'Ege Tell', 'Kanyon İletişim', 'Yıldız Telekom', 'Batı İletişim'];
+                            const names = ['Mobil Dünyası', 'Gsm Teknik', 'Dijital Market', 'Akıllı Çözüm', 'Teknoloji Köşesi', 'Ege İletişim', 'Hızlı Servis', 'Güvenli Gsm'];
                             return {
-                                id: 100000 + i,
+                                id: 200000 + i,
                                 bolge: reg,
                                 bayi: `${reg.toUpperCase()} ${names[i % names.length]} - #${i + 1}`,
-                                adres: `${reg} Bölgesi Arşiv Kayıtlı Adres`,
-                                telefon: `05${Math.floor(200000000 + Math.random() * 700000000)}`,
+                                adres: `${reg} Bölgesi Kayıtlı Adres Verisi`,
+                                telefon: `05${Math.floor(100000000 + Math.random() * 800000000)}`,
                                 durum: 'Bekliyor'
                             };
                         })
@@ -208,7 +210,7 @@
             }, []);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v21_massive_db', JSON.stringify(data));
+                if (data.length > 0) localStorage.setItem('saha_pro_v22_massive_db', JSON.stringify(data));
             }, [data]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -235,7 +237,7 @@
                         <div className="max-w-xl mx-auto flex flex-col gap-6 pt-12">
                             <div className="flex justify-between items-center text-white">
                                 <div>
-                                    <h1 className="text-3xl font-black tracking-tighter italic leading-none flex items-center gap-2">SAHA PRO <span className="font-medium opacity-50 text-sm not-italic">v21.0</span></h1>
+                                    <h1 className="text-3xl font-black tracking-tighter italic leading-none flex items-center gap-2">SAHA PRO <span className="font-medium opacity-50 text-sm not-italic">v22.0</span></h1>
                                     <p className="text-[12px] font-bold opacity-70 uppercase tracking-[0.2em] mt-2">{selectedRegion === 'Dashboard' ? 'DEV SİSTEM PANELİ' : selectedRegion + ' BÖLGESİ'}</p>
                                 </div>
                                 <div className="text-right count-tag px-4 py-2 rounded-2xl">
@@ -249,7 +251,7 @@
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-200 group-focus-within:text-white transition-colors"><Icon name="search" size={18} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="1000+ kayıt içinde ara..." 
+                                        placeholder="1690+ kayıt içinde ara..." 
                                         className="w-full bg-white/10 border border-white/20 text-white placeholder-indigo-100 rounded-2xl py-4 pl-12 pr-4 outline-none focus:bg-white/20 text-md font-semibold transition-all shadow-inner" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
@@ -262,7 +264,7 @@
                     {/* Content Area */}
                     <div className="flex-1 p-6 max-w-xl mx-auto w-full">
                         {activeTab === 'liste' && selectedRegion === 'Dashboard' && !searchTerm && (
-                            /* Region Dashboard Grid - Devasa Sistem İçin Kompakt Mod */
+                            /* Region Dashboard Grid */
                             <div className="animate-in fade-in duration-300">
                                 <div className="flex justify-between items-center mb-6 ml-1">
                                     <h2 className="text-slate-400 font-black text-[12px] uppercase tracking-[0.2em] italic">Bölgesel Yönetim</h2>
@@ -306,7 +308,7 @@
                                     <p className="text-[12px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 italic">Portföy İlerleme Raporu</p>
                                     <div className="text-9xl font-[1000] text-slate-900 tracking-tighter leading-none italic select-none">%{stats.pct}</div>
                                     <div className="w-full bg-slate-100 h-4 rounded-full mt-14 overflow-hidden border-2 border-slate-50 shadow-inner">
-                                        <div className="bg-indigo-600 h-full transition-all duration-1000 shadow-lg" style={{ width: `${stats.pct}%` }}></div>
+                                        <div className="h-full bg-indigo-600 transition-all duration-1000 shadow-lg" style={{ width: `${stats.pct}%` }}></div>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4 uppercase">
