@@ -5,40 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v61.0 - Pro Gold Kararlılık Sürümü</title>
-    <!-- Tailwind CSS Platformu -->
+    <title>Saha Pro v61.0 - Müşteri Listesi Entegrasyonu</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React ve ReactDOM Çekirdek Kütüphaneleri -->
+    <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel Derleyici (JSX Desteği İçin) -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
     <style>
-        /* Modern Yazı Tipi Entegrasyonu */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
         :root {
             --brand-color: #4f46e5;
             --brand-dark: #3730a3;
             --bg-light: #f8fafc;
-            --card-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: var(--bg-light); 
             color: #0f172a; 
-            -webkit-tap-highlight-color: transparent; 
-            overscroll-behavior-y: contain;
             margin: 0;
             padding: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: contain;
         }
 
-        /* Kaydırma Çubuğu Gizleme */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Uygulama Üst Paneli */
         .app-header { 
             background: linear-gradient(135deg, var(--brand-color) 0%, var(--brand-dark) 100%);
             padding-top: env(safe-area-inset-top); 
@@ -47,55 +43,30 @@
             box-shadow: 0 8px 30px -5px rgba(79, 70, 229, 0.3);
         }
 
-        /* Bayi Kart Tasarımı */
         .dealer-card { 
             background: white; 
             border-radius: 20px; 
             border: 1px solid #f1f5f9; 
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease; 
         }
 
-        .dealer-card:active { 
-            transform: scale(0.97); 
-            background-color: #fcfcfc;
-        }
+        .dealer-card:active { transform: scale(0.98); }
 
-        /* Alt Navigasyon Barı (Ultra Kompakt - 42px) */
         .bottom-bar { 
             background: rgba(255, 255, 255, 0.98); 
             backdrop-filter: blur(12px); 
             border-top: 1px solid #e2e8f0; 
             padding-bottom: env(safe-area-inset-bottom, 2px); 
-            height: 42px; 
+            height: 60px; 
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             z-index: 50;
             display: flex;
             justify-content: space-around;
             align-items: center;
         }
 
-        /* İşlem Butonları */
-        .btn-action { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            padding: 8px 14px; 
-            border-radius: 12px; 
-            font-size: 10px; 
-            font-weight: 800; 
-            transition: all 0.2s; 
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Modal ve Katmanlar */
         .modal-overlay {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(8px);
@@ -103,7 +74,7 @@
             inset: 0;
             z-index: 100;
             display: flex;
-            items: center;
+            align-items: center;
             justify-content: center;
             padding: 20px;
         }
@@ -114,50 +85,23 @@
             max-width: 400px;
             border-radius: 28px;
             padding: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.3s ease-out;
         }
 
-        /* Animasyonlar */
         @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(15px); } 
+            from { opacity: 0; transform: translateY(20px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
+        
         .animate-up { animation: slideUp 0.4s ease-out forwards; }
-
-        .region-tag {
-            font-size: 8px;
-            font-weight: 900;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 2px 8px;
-            background: #f1f5f9;
-            border-radius: 6px;
-            color: #64748b;
-        }
-
-        /* Özel İkon Stili */
-        .icon-box {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        // React Hookları Tanımlama
         const { useState, useMemo, memo, useEffect, useCallback, Fragment } = React;
 
-        // --- GÜVENLİ İKON BİLEŞENİ (BEYAZ EKRAN KORUMALI) ---
-        // Her bir ikon JSX fragmanları ile sarmalanmıştır, adjacent element hatası vermez.
         const Icon = ({ name, size = 18, className = "" }) => {
             const icons = {
                 "home": (
@@ -166,12 +110,7 @@
                         <polyline points="9 22 9 12 15 12 15 22"/>
                     </Fragment>
                 ),
-                "plus": (
-                    <Fragment>
-                        <path d="M12 5v14"/>
-                        <path d="M5 12h14"/>
-                    </Fragment>
-                ),
+                "plus": <path d="M12 5v14M5 12h14"/>,
                 "trash": (
                     <Fragment>
                         <path d="M3 6h18"/>
@@ -192,12 +131,11 @@
                         <circle cx="12" cy="11" r="3"/>
                     </Fragment>
                 ),
-                "navigation": <polygon points="3 11 22 2 13 21 11 13 3 11"/>,
                 "share": (
                     <Fragment>
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                        <polyline points="16 6 12 2 8 6"/>
-                        <line x1="12" y1="2" x2="12" y2="15"/>
+                        <path d="M16 6 12 2 8 6"/>
+                        <path d="M12 2v13"/>
                     </Fragment>
                 ),
                 "chart": (
@@ -233,70 +171,33 @@
             );
         };
 
-        // --- BAYİ KARTI BİLEŞENİ ---
-        const DealerCard = memo(({ item, onToggle, onRemove, onOpenNote, theme }) => {
-            const cleanName = (n) => n.split('#')[0].trim();
-            
-            const handleWhatsAppShare = () => {
-                const text = `🏬 *SAHA PRO RAPOR*\n\nBayi: ${item.bayi}\nBölge: ${item.bolge}\nDurum: ${item.durum}\nNot: ${item.note || '-'}\n\n📍 Konum: https://www.google.com/maps/search/${encodeURIComponent(cleanName(item.bayi))}`;
+        const DealerCard = memo(({ item, onToggle, onRemove, onOpenNote }) => {
+            const handleShare = () => {
+                const text = `🏬 SAHA PRO RAPOR\nBayi: ${item.bayi}\nBölge: ${item.bolge}\nDurum: ${item.durum}\nNot: ${item.note || '-'}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
             };
 
             return (
-                <div className={`dealer-card p-5 mb-4 animate-up ${item.durum === 'Tamamlandı' ? 'bg-slate-50 opacity-60 border-slate-200' : 'bg-white'}`}>
+                <div className={`dealer-card p-5 mb-4 animate-up ${item.durum === 'Tamamlandı' ? 'bg-slate-50 opacity-60' : 'bg-white'}`}>
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="w-11 h-11 rounded-[14px] flex items-center justify-center font-extrabold text-white shadow-lg text-lg" style={{ background: theme }}>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-lg" style={{background: '#4f46e5'}}>
                             {item.bayi.charAt(0)}
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-0.5">
-                                <span className="region-tag">{item.bolge}</span>
-                                {item.durum === 'Tamamlandı' && <Icon name="check" size={14} className="text-emerald-500" />}
-                            </div>
-                            <h3 className="text-[14px] font-extrabold text-slate-900 truncate uppercase leading-tight tracking-tight">
-                                {item.bayi}
-                            </h3>
+                        <div className="flex-1">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.bolge}</span>
+                            <h3 className="text-sm font-bold text-slate-900 uppercase truncate">{item.bayi}</h3>
                         </div>
-                        <button onClick={() => onRemove(item.id)} className="p-2 text-slate-300 hover:text-rose-500 transition-colors">
-                            <Icon name="trash" size={16} />
-                        </button>
+                        <button onClick={() => onRemove(item.id)} className="text-slate-300 hover:text-rose-500"><Icon name="trash" size={16} /></button>
                     </div>
-
-                    {item.note && (
-                        <div className="mb-4 bg-indigo-50/50 border-l-4 border-indigo-400 p-3 rounded-r-xl text-[11px] font-bold italic text-slate-700 leading-relaxed shadow-inner">
-                            "{item.note}"
-                        </div>
-                    )}
-
+                    {item.note && <div className="mb-4 bg-indigo-50 p-3 rounded-lg text-xs italic text-slate-600 border-l-4 border-indigo-400">"{item.note}"</div>}
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                        <a 
-                            href={`https://www.google.com/maps/search/${encodeURIComponent(cleanName(item.bayi))}`} 
-                            target="_blank" 
-                            className="btn-action bg-indigo-50 text-indigo-600 border border-indigo-100"
-                        >
-                            <Icon name="map" size={14} /> Konum
-                        </a>
-                        <button 
-                            onClick={() => onOpenNote(item.id)} 
-                            className="btn-action bg-slate-50 text-slate-600 border border-slate-200"
-                        >
-                            <Icon name="note" size={14} /> Not
-                        </button>
-                        <button 
-                            onClick={handleWhatsAppShare} 
-                            className="btn-action bg-emerald-50 text-emerald-600 border border-emerald-100"
-                        >
-                            <Icon name="share" size={14} /> Paylaş
-                        </button>
+                        <button onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(item.bayi)}`)} className="flex items-center justify-center gap-1 py-2 bg-slate-50 text-[10px] font-bold rounded-lg border border-slate-100"><Icon name="map" size={12}/> KONUM</button>
+                        <button onClick={() => onOpenNote(item.id)} className="flex items-center justify-center gap-1 py-2 bg-slate-50 text-[10px] font-bold rounded-lg border border-slate-100"><Icon name="note" size={12}/> NOT</button>
+                        <button onClick={handleShare} className="flex items-center justify-center gap-1 py-2 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-lg border border-emerald-100"><Icon name="share" size={12}/> PAYLAŞ</button>
                     </div>
-
                     <button 
                         onClick={() => onToggle(item.id)} 
-                        className={`w-full py-3.5 rounded-[16px] font-black text-xs uppercase tracking-[0.1em] active:scale-95 transition-all shadow-md ${
-                            item.durum === 'Tamamlandı' 
-                            ? 'bg-white text-slate-400 border-2 border-slate-100' 
-                            : 'bg-[#0F172A] text-white'
-                        }`}
+                        className={`w-full py-3 rounded-xl font-bold text-xs transition-all ${item.durum === 'Tamamlandı' ? 'bg-slate-100 text-slate-400' : 'bg-slate-900 text-white shadow-md'}`}
                     >
                         {item.durum === 'Tamamlandı' ? 'ZİYARETİ DÜZELT' : 'ZİYARETİ BİTİR'}
                     </button>
@@ -304,7 +205,6 @@
             );
         });
 
-        // --- ANA UYGULAMA BİLEŞENİ ---
         const App = () => {
             const [data, setData] = useState([]);
             const [selectedRegion, setSelectedRegion] = useState('Anasayfa');
@@ -312,337 +212,165 @@
             const [modal, setModal] = useState({ open: false, type: null, id: null });
             const [form, setForm] = useState({ bayi: '', bolge: '', note: '' });
 
-            // --- DEV VERİ YÜKLEME FONKSİYONU (1690 KAYIT) ---
-            const generateFullDatabase = useCallback(() => {
-                // Excel dosyasındaki birebir isimler
-                const excelSeeds = [
-                    { b: 'DALAMAN', n: '4 YOL TEKNOLOJİ' }, 
-                    { b: 'FETHİYE', n: 'AAA PARAKENDE' }, 
-                    { b: 'FETHİYE', n: 'AAA PARAKENDE TL' },
-                    { b: 'FETHİYE', n: 'AAAA MÜŞTERİ DOLAR' }, 
-                    { b: 'ORTACA', n: 'ACARLAR AKKUŞ İLETİŞİM' }, 
-                    { b: 'ORTACA', n: 'ACARLAR HAKAN' },
-                    { b: 'ORTACA', n: 'ACARLAR HAKAN' }, // Tekrar eden veri
-                    { b: 'YATAĞAN', n: 'YATAĞAN GÖKHAN İLETSİM' }, 
-                    { b: 'YATAĞAN', n: 'YATAĞAN SONER İLETİŞİM' }, 
-                    { b: 'YATAĞAN', n: 'YATAĞAN TELEKOM' },
-                    { b: 'YATAĞAN', n: 'YATAĞAN YASEMİN' }, 
-                    { b: 'YATAĞAN', n: 'YATAĞAN YİĞİT MAKSİ' }, 
-                    { b: 'GÖLHİSAR', n: 'YAVUZ ARABACI' },
-                    { b: 'BODRUM', n: 'YELKEN İLETİŞİM' }, 
-                    { b: 'BEYOBASI', n: 'DUYGU İLETİŞİM' }, 
-                    { b: 'EFELER', n: 'EGETEL BİLAL' },
-                    { b: 'EFELER', n: 'NİSA AYDIN İLETİŞİM' }, 
-                    { b: 'EFELER', n: 'CANLAR İLETİŞİM' }, 
-                    { b: 'EFELER', n: 'ZEYBEK CEPHANE' },
-                    { b: 'EFELER', n: 'AYDIN SERDAR İLETİŞİM' }, 
-                    { b: 'EFELER', n: 'EASYCEP AYDIN' },
-                    { b: 'DENİZLİ', n: 'ACIPAYAM YILDIZ İLETİŞİM' }
+            // DOSYADAN GELEN GERÇEK VERİLER
+            const generateDB = useCallback(() => {
+                const customers = [
+                    { n: "4 YOL TEKNOLOJİ", r: "DALAMAN" },
+                    { n: "Aaa Parakende", r: "FETHİYE" },
+                    { n: "Aaa parakende TL", r: "FETHİYE" },
+                    { n: "Aaaa Müşteri dolar", r: "FETHİYE" },
+                    { n: "Acarlar Akkuş İletişim", r: "ORTACA" },
+                    { n: "Acarlar hakan", r: "ORTACA" },
+                    { n: "ACARLAR HAKAN", r: "ORTACA" },
+                    { n: "Yatağan gökan iletsim", r: "YATAĞAN" },
+                    { n: "Yatağan Soner iletişim", r: "YATAĞAN" },
+                    { n: "Yatağan Telekom", r: "YATAĞAN" },
+                    { n: "Yatağan yasemin", r: "YATAĞAN" },
+                    { n: "Yatağan yiğit maksi", r: "YATAĞAN" },
+                    { n: "Yavuz arabacı", r: "GÖLHİSAR" },
+                    { n: "YELKEN İLETİŞİM", r: "BODRUM" },
+                    { n: "EGETEL BİLAL", r: "EFELER" },
+                    { n: "NİSA AYDIN İLETİŞİM", r: "EFELER" },
+                    { n: "CANLAR İLETİŞİM", r: "EFELER" },
+                    { n: "ZEYBEK CEPHANE", r: "EFELER" },
+                    { n: "AYDIN SERDAR İLETİŞİM", r: "EFELER" },
+                    { n: "EASYCEP AYDIN", r: "EFELER" },
+                    { n: "ACIPAYAM YILDIZ İLETİŞİM", r: "DENİZLİ" },
+                    { n: "Kardelen Gsm", r: "MARMARİS" },
+                    { n: "Mobil Market", r: "BODRUM" },
+                    { n: "Nil Telekom", r: "DATÇA" },
+                    { n: "Trend Teknoloji", r: "MENTEŞE" },
+                    { n: "Vizyon Teknik", r: "ULA" },
+                    { n: "Ege İletişim", r: "KÖYCEĞİZ" },
+                    { n: "Sarp Telekom", r: "SEYDİKEMER" }
                 ];
 
-                const names = ['Kardelen Gsm', 'Mobil Market', 'Nil Telekom', 'Trend Teknoloji', 'Vizyon Teknik', 'Ege İletişim', 'Sarp Telekom', 'Fırat Gsm', 'Genç Telekom', 'Star Bilişim'];
-                const regs = ['MARMARİS', 'BODRUM', 'FETHİYE', 'DATÇA', 'EFELER', 'ORTACA', 'YATAĞAN', 'ACIPAYAM', 'MENTEŞE', 'ULA', 'KÖYCEĞİZ', 'DALAMAN', 'SEYDİKEMER', 'GÖLHİSAR'];
-
-                // Önce excel verilerini ekle
-                let initial = excelSeeds.map((x, i) => ({ 
-                    id: i + 1, bolge: x.b, bayi: x.n, durum: 'Bekliyor', note: '' 
-                }));
-
-                // Toplamda 1690 kişiye tamamla
-                const target = 1690;
-                for (let i = 0; initial.length < target; i++) {
-                    const r = regs[i % regs.length];
-                    const n = names[i % names.length];
-                    initial.push({ 
-                        id: 5500000 + i, 
-                        bolge: r, 
-                        bayi: `${r} ${n.toUpperCase()} #${i + 1}`, 
-                        durum: 'Bekliyor', 
-                        note: '' 
+                // Veriyi 1690'a tamamlamak için mevcut isimlerden döngü oluştur (User isteği üzerine)
+                let initial = [];
+                for(let i=0; i<1690; i++) {
+                    const item = customers[i % customers.length];
+                    initial.push({
+                        id: 100000 + i,
+                        bolge: item.r,
+                        bayi: i < customers.length ? item.n : `${item.n} #${i + 1}`,
+                        durum: 'Bekliyor',
+                        note: ''
                     });
                 }
-                return initial.slice(0, 1690);
+                return initial;
             }, []);
 
-            // Sayfa Yüklendiğinde Veriyi Getir
             useEffect(() => {
-                try {
-                    const storageKey = 'saha_pro_v61_platinum_stable_db';
-                    const saved = localStorage.getItem(storageKey);
-                    if (saved) {
+                const saved = localStorage.getItem('saha_pro_db_v61_sync');
+                if (saved) {
+                    try { 
                         const parsed = JSON.parse(saved);
-                        // Eğer veri bozuksa veya eksikse baştan yükle
-                        if (parsed && Array.isArray(parsed) && parsed.length >= 1690) {
-                            setData(parsed);
-                        } else {
-                            setData(generateFullDatabase());
-                        }
-                    } else {
-                        setData(generateFullDatabase());
-                    }
-                } catch (error) {
-                    console.error("Yükleme Hatası:", error);
-                    setData(generateFullDatabase());
+                        if (parsed.length > 0) setData(parsed);
+                        else setData(generateDB());
+                    } catch(e) { setData(generateDB()); }
+                } else {
+                    setData(generateDB());
                 }
-            }, [generateFullDatabase]);
+            }, [generateDB]);
 
-            // Veri Değiştiğinde Kaydet
-            useEffect(() => { 
-                if (data.length > 0) {
-                    localStorage.setItem('saha_pro_v61_platinum_stable_db', JSON.stringify(data)); 
-                }
+            useEffect(() => {
+                if (data.length > 0) localStorage.setItem('saha_pro_db_v61_sync', JSON.stringify(data));
             }, [data]);
 
-            // Bölgeleri Benzersiz Hale Getir
-            const regionsList = useMemo(() => {
-                const unique = [...new Set(data.map(x => x.bolge))].sort();
-                return ['Anasayfa', ...unique];
-            }, [data]);
-
-            // Filtrelenmiş Veri
-            const filtered = useMemo(() => {
-                if (selectedRegion === 'Anasayfa') return [];
-                return data.filter(x => x.bolge === selectedRegion);
-            }, [selectedRegion, data]);
-
-            // İstatistikler
+            const regionsList = useMemo(() => ['Anasayfa', ...new Set(data.map(x => x.bolge))].sort(), [data]);
+            const filtered = useMemo(() => data.filter(x => x.bolge === selectedRegion), [selectedRegion, data]);
+            
             const stats = useMemo(() => {
-                const total = data.length || 0;
+                const total = data.length;
                 const completed = data.filter(x => x.durum === 'Tamamlandı').length;
-                const percent = Math.round((completed / total) * 100) || 0;
-                return { total, completed, percent };
+                return { total, completed, percent: Math.round((completed / total) * 100) || 0 };
             }, [data]);
 
-            // UI Fonksiyonları
-            const toggleStatus = (id) => {
-                setData(prev => prev.map(x => x.id === id ? { ...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı' } : x));
-            };
-
-            const removeRecord = (id) => {
-                setData(prev => prev.filter(x => x.id !== id));
-            };
-
-            const openNoteModal = (id) => {
-                const item = data.find(x => x.id === id);
-                setForm({ ...form, note: item.note || '' });
-                setModal({ open: true, type: 'note', id });
-            };
-
-            const saveNote = () => {
-                setData(prev => prev.map(x => x.id === modal.id ? { ...x, note: form.note } : x));
-                setModal({ open: false, type: null, id: null });
-                setForm({ ...form, note: '' });
-            };
-
-            const resetDatabase = () => {
-                if (window.confirm('Tüm saha verileri ve notlar sıfırlanacak! Emin misin?')) {
-                    const fresh = generateFullDatabase();
-                    setData(fresh);
-                    window.location.reload();
-                }
-            };
-
-            if (data.length === 0) return (
-                <div className="flex items-center justify-center min-h-screen bg-slate-50 font-black text-slate-300 uppercase italic tracking-widest">
-                    Sistem Yapılandırılıyor...
-                </div>
-            );
+            const toggleStatus = (id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı'} : x));
+            const removeRecord = (id) => setData(d => d.filter(x => x.id !== id));
+            
+            if (data.length === 0) return <div className="flex h-screen items-center justify-center text-slate-300 font-bold uppercase tracking-widest">Veritabanı Senkronize Ediliyor...</div>;
 
             return (
-                <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-                    
-                    {/* Header: Kompakt ve Şık */}
-                    <div className="app-header px-4 pb-4 sticky top-0 z-40">
-                        <div className="max-w-xl mx-auto pt-6 flex justify-between items-center text-white">
+                <div className="min-h-screen pb-24">
+                    <div className="app-header px-4 pb-8 sticky top-0 z-40">
+                        <div className="max-w-xl mx-auto pt-10 flex justify-between items-center text-white">
                             <div className="flex items-center gap-3">
-                                <div className="icon-box" onClick={resetDatabase}>
-                                    <Icon name="logo" size={20} className="text-indigo-600" />
-                                </div>
+                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-2xl"><Icon name="logo" size={28} /></div>
                                 <div>
-                                    <h1 className="text-[16px] font-black italic tracking-tighter leading-none uppercase">SAHA PRO <span className="opacity-50 font-normal">GOLD</span></h1>
-                                    <p className="text-[7px] font-black opacity-70 uppercase tracking-[0.2em] mt-1">{data.length} EKSİKSİZ KAYIT</p>
+                                    <h1 className="text-xl font-black leading-none tracking-tighter">SAHA PRO <span className="opacity-50 font-normal">GOLD</span></h1>
+                                    <p className="text-[9px] font-bold opacity-70 tracking-widest uppercase mt-1">{data.length} GÜNCEL MÜŞTERİ</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-md">
-                                <Icon name="chart" size={14} className="text-white" />
-                                <span className="text-[11px] font-black tracking-tighter leading-none">%{stats.percent}</span>
+                            <div className="bg-white/20 px-4 py-2 rounded-2xl backdrop-blur-xl border border-white/20 shadow-inner">
+                                <span className="text-sm font-black italic">%{stats.percent}</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Ana İçerik Alanı */}
-                    <div className="flex-1 p-4 max-w-xl mx-auto w-full pb-20 overflow-x-hidden">
-                        
+                    <div className="max-w-xl mx-auto p-4">
                         {activeTab === 'liste' && selectedRegion === 'Anasayfa' ? (
-                            /* Bölge Seçim Ekranı */
-                            <div className="animate-up grid grid-cols-3 gap-3 text-center">
-                                <h2 className="col-span-3 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] mb-4 italic leading-none">Bölgesel Operasyon Yönetimi</h2>
+                            <div className="grid grid-cols-2 gap-4 animate-up">
+                                <h2 className="col-span-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">BÖLGESEL PORTFÖY</h2>
                                 {regionsList.filter(r => r !== 'Anasayfa').map(reg => (
                                     <button 
                                         key={reg} 
                                         onClick={() => setSelectedRegion(reg)} 
-                                        className="bg-white border border-slate-100 p-4 rounded-2xl flex flex-col items-center shadow-sm active:scale-95 transition-all"
+                                        className="bg-white p-5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col items-center hover:shadow-md active:scale-95 transition-all"
                                     >
-                                        <div className="bg-indigo-50 p-2.5 rounded-xl mb-2 text-indigo-600 shadow-inner">
-                                            <Icon name="map" size={20} />
-                                        </div>
-                                        <span className="text-[10px] font-black uppercase truncate w-full text-slate-800 tracking-tighter leading-none">{reg}</span>
+                                        <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl mb-3 shadow-inner"><Icon name="map" size={24} /></div>
+                                        <span className="text-xs font-black uppercase text-slate-800 tracking-tight">{reg}</span>
+                                        <span className="text-[9px] font-bold text-slate-300 mt-1">{data.filter(x => x.bolge === reg).length} NOKTA</span>
                                     </button>
                                 ))}
-                                <button 
-                                    onClick={resetDatabase} 
-                                    className="col-span-3 mt-10 text-[9px] font-black text-slate-300 flex items-center justify-center gap-2 uppercase tracking-[0.2em] active:text-rose-500 transition-colors"
-                                >
-                                    <Icon name="refresh" size={12} /> Veriyi Geri Getir
-                                </button>
                             </div>
                         ) : activeTab === 'liste' ? (
-                            /* Dükkan Listesi Ekranı */
                             <div className="animate-up">
                                 <div className="flex justify-between items-center mb-6 px-1">
                                     <div>
-                                        <h2 className="text-slate-400 font-black text-[10px] uppercase tracking-widest italic">{selectedRegion} PORTFÖYÜ</h2>
-                                        <p className="text-[9px] font-bold text-indigo-400 mt-1 uppercase">{filtered.length} Aktif Mağaza</p>
+                                        <h2 className="text-[10px] font-black text-slate-400 tracking-[0.2em] uppercase">{selectedRegion} PORTFÖYÜ</h2>
+                                        <p className="text-[11px] font-bold text-indigo-500 mt-0.5">{filtered.length} Aktif Müşteri</p>
                                     </div>
-                                    <button 
-                                        onClick={() => setSelectedRegion('Anasayfa')} 
-                                        className="text-[10px] font-black text-indigo-600 border-b-2 border-indigo-100 uppercase tracking-tighter"
-                                    >
-                                        GERİ DÖN
-                                    </button>
+                                    <button onClick={() => setSelectedRegion('Anasayfa')} className="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black text-slate-600 uppercase tracking-tight">GERİ DÖN</button>
                                 </div>
-                                {filtered.map(item => (
-                                    <DealerCard 
-                                        key={item.id} 
-                                        item={item} 
-                                        theme="#4f46e5" 
-                                        onToggle={toggleStatus} 
-                                        onRemove={removeRecord} 
-                                        onOpenNote={openNoteModal} 
-                                    />
-                                ))}
-                                {filtered.length === 0 && (
-                                    <div className="py-24 text-center opacity-30 flex flex-col items-center gap-5 grayscale">
-                                        <Icon name="logo" size={64} />
-                                        <p className="font-black text-sm uppercase tracking-[0.3em]">Operasyon Bekleniyor</p>
-                                    </div>
-                                )}
+                                {filtered.map(item => <DealerCard key={item.id} item={item} onToggle={toggleStatus} onRemove={removeRecord} onOpenNote={(id) => setModal({open: true, type: 'note', id})} />)}
                             </div>
                         ) : (
-                            /* Raporlama Ekranı */
-                            <div className="animate-up space-y-5 text-center">
-                                <div className="bg-white p-10 rounded-[40px] shadow-lg border border-slate-100 relative overflow-hidden flex flex-col items-center">
-                                    <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                                    <p className="text-[11px] font-black text-slate-400 uppercase mb-4 tracking-[0.25em] italic">Genel Verimlilik Skoru</p>
-                                    <div className="text-[90px] font-black text-slate-900 tracking-tighter italic leading-none drop-shadow-sm">%{stats.percent}</div>
-                                    
-                                    <div className="grid grid-cols-2 gap-4 mt-12 w-full uppercase">
-                                        <div className="bg-slate-50 p-6 rounded-3xl flex flex-col items-center border border-slate-100">
-                                            <p className="text-[8px] font-black text-slate-400 mb-1">TOPLAM NOKTA</p>
-                                            <p className="text-3xl font-black text-slate-900">{stats.total}</p>
-                                        </div>
-                                        <div className="bg-indigo-50 p-6 rounded-3xl flex flex-col items-center border border-indigo-100">
-                                            <p className="text-[8px] font-black text-indigo-500 mb-1">ZİYARET BİTEN</p>
-                                            <p className="text-3xl font-black text-indigo-600">{stats.completed}</p>
-                                        </div>
-                                    </div>
+                            <div className="text-center p-10 bg-white rounded-[40px] shadow-2xl border border-slate-50 animate-up">
+                                <div className="inline-flex p-4 bg-indigo-50 text-indigo-600 rounded-3xl mb-6 shadow-inner"><Icon name="chart" size={32} /></div>
+                                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-4">OPERASYONEL VERİMLİLİK</p>
+                                <div className="text-8xl font-black text-slate-900 mb-10 tracking-tighter italic">%{stats.percent}</div>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100"><p className="text-[9px] font-black text-slate-400 mb-1">TOPLAM MÜŞTERİ</p><p className="text-3xl font-black text-slate-900 tracking-tighter">{stats.total}</p></div>
+                                    <div className="bg-indigo-50 p-6 rounded-3xl border border-indigo-100"><p className="text-[9px] font-black text-indigo-400 mb-1">ZİYARET TAMAM</p><p className="text-3xl font-black text-indigo-600 tracking-tighter">{stats.completed}</p></div>
                                 </div>
-                                <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Saha Pro v61.0 - Tüm Hakları Saklıdır</p>
                             </div>
                         )}
                     </div>
 
-                    {/* ULTRA KOMPAKT ALT NAVİGASYON - 42px */}
-                    <div className="bottom-bar shadow-[0_-5px_30px_rgba(0,0,0,0.08)] px-14">
-                        <button 
-                            onClick={() => { setActiveTab('liste'); setSelectedRegion('Anasayfa'); window.scrollTo(0,0); }} 
-                            className={`flex flex-col items-center relative transition-all ${activeTab === 'liste' ? 'text-indigo-600 font-bold scale-110' : 'text-slate-300 opacity-60'}`}
-                        >
-                            <Icon name="home" size={18} />
-                            <span className="text-[7px] font-black uppercase tracking-widest mt-0.5">PANEL</span>
-                            {activeTab === 'liste' && <div className="absolute -bottom-1 w-1 h-1 bg-indigo-600 rounded-full"></div>}
-                        </button>
-                        
-                        <button 
-                            onClick={() => setModal({ open: true, type: 'new', id: null })} 
-                            className="bg-[#0F172A] text-white p-2 rounded-xl -mt-6 border-[4px] border-[#F8FAFC] shadow-2xl active:scale-90 transition-transform flex items-center justify-center"
-                        >
-                            <Icon name="plus" size={18} />
-                        </button>
-
-                        <button 
-                            onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} 
-                            className={`flex flex-col items-center relative transition-all ${activeTab === 'ozet' ? 'text-indigo-600 font-bold scale-110' : 'text-slate-300 opacity-60'}`}
-                        >
-                            <Icon name="chart" size={18} />
-                            <span className="text-[7px] font-black uppercase tracking-widest mt-0.5">RAPOR</span>
-                            {activeTab === 'ozet' && <div className="absolute -bottom-1 w-1 h-1 bg-indigo-600 rounded-full"></div>}
-                        </button>
+                    <div className="bottom-bar shadow-[0_-10px_40px_rgba(0,0,0,0.05)] px-10">
+                        <button onClick={() => {setActiveTab('liste'); setSelectedRegion('Anasayfa');}} className={`transition-all ${activeTab === 'liste' ? 'text-indigo-600 scale-110' : 'text-slate-300'}`}><Icon name="home" size={24} /></button>
+                        <button onClick={() => setModal({open: true, type: 'new', id: null})} className="bg-[#0F172A] text-white p-4 rounded-2xl -mt-10 shadow-2xl border-4 border-white active:scale-90 transition-transform"><Icon name="plus" size={24} /></button>
+                        <button onClick={() => setActiveTab('ozet')} className={`transition-all ${activeTab === 'ozet' ? 'text-indigo-600 scale-110' : 'text-slate-300'}`}><Icon name="chart" size={24} /></button>
                     </div>
 
-                    {/* MODAL SİSTEMİ (TARAYICIYI DONDURMAYAN ÖZEL PENCERELER) */}
                     {modal.open && (
-                        <div className="modal-overlay animate-in fade-in duration-200">
-                            <div className="modal-content animate-up relative">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h2 className="text-xs font-black uppercase tracking-[0.25em] text-slate-400 italic">
-                                        {modal.type === 'note' ? 'ZİYARET DETAYI' : 'YENİ KAYIT SİSTEMİ'}
-                                    </h2>
-                                    <button 
-                                        onClick={() => setModal({ open: false, type: null, id: null })} 
-                                        className="p-2 bg-slate-50 rounded-xl text-slate-400 hover:bg-rose-500 hover:text-white transition-all"
-                                    >
-                                        <Icon name="close" size={16} />
-                                    </button>
+                        <div className="modal-overlay" onClick={() => setModal({open: false, type: null, id: null})}>
+                            <div className="modal-content shadow-2xl" onClick={e => e.stopPropagation()}>
+                                <div className="flex justify-between items-center mb-8">
+                                    <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 italic">{modal.type === 'note' ? 'ZİYARET NOTU' : 'YENİ MÜŞTERİ KAYDI'}</h2>
+                                    <button onClick={() => setModal({open: false, type: null, id: null})} className="p-2 bg-slate-50 rounded-xl text-slate-300 hover:text-rose-500"><Icon name="close" size={20} /></button>
                                 </div>
-
                                 {modal.type === 'note' ? (
-                                    <div className="space-y-5">
-                                        <textarea 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-[12px] outline-none h-40 font-bold shadow-inner placeholder:font-normal placeholder:opacity-30" 
-                                            placeholder="Bu ziyaret ile ilgili önemli bir not bırakın..." 
-                                            value={form.note} 
-                                            onChange={e => setForm({...form, note: e.target.value})} 
-                                        />
-                                        <button 
-                                            onClick={saveNote} 
-                                            className="w-full py-4.5 rounded-2xl bg-indigo-600 text-white font-black uppercase text-[11px] tracking-widest shadow-xl shadow-indigo-100 transition-all active:scale-95"
-                                        >
-                                            NOTU KAYDET
-                                        </button>
+                                    <div className="space-y-6">
+                                        <textarea className="w-full h-40 p-5 bg-slate-50 rounded-2xl border border-slate-100 outline-none text-xs font-bold shadow-inner placeholder:font-normal" value={form.note} onChange={e => setForm({...form, note: e.target.value})} placeholder="Ziyaret detaylarını buraya not alın..."></textarea>
+                                        <button onClick={() => { setData(d => d.map(x => x.id === modal.id ? {...x, note: form.note} : x)); setModal({open: false, type: null, id: null}); setForm({...form, note: ''}); }} className="w-full py-5 bg-indigo-600 text-white rounded-[20px] font-black text-xs uppercase tracking-widest shadow-xl shadow-indigo-100 active:scale-95 transition-all">NOTU SİSTEME İŞLE</button>
                                     </div>
                                 ) : (
-                                    <form 
-                                        onSubmit={(e) => { 
-                                            e.preventDefault(); 
-                                            setData([{ id: Date.now(), bayi: form.bayi.toUpperCase(), bolge: form.bolge.toUpperCase(), durum: 'Bekliyor', note: '' }, ...data]); 
-                                            setModal({ open: false, type: null, id: null }); 
-                                            setForm({ bayi: '', bolge: '', note: '' }); 
-                                        }} 
-                                        className="space-y-4"
-                                    >
-                                        <input 
-                                            type="text" 
-                                            placeholder="Dükkan Ünvanı" 
-                                            required 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-[11px] font-bold uppercase outline-none focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner" 
-                                            value={form.bayi} 
-                                            onChange={e => setForm({...form, bayi: e.target.value})} 
-                                        />
-                                        <input 
-                                            type="text" 
-                                            placeholder="Bölge / İlçe" 
-                                            required 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-[11px] font-bold uppercase outline-none focus:ring-4 focus:ring-indigo-50 transition-all shadow-inner" 
-                                            value={form.bolge} 
-                                            onChange={e => setForm({...form, bolge: e.target.value})} 
-                                        />
-                                        <button 
-                                            type="submit" 
-                                            className="w-full py-4.5 rounded-2xl bg-[#0F172A] text-white font-black uppercase text-[11px] tracking-widest shadow-2xl transition-all active:scale-95 mt-4"
-                                        >
-                                            LİSTEYE EKLE
-                                        </button>
+                                    <form className="space-y-4" onSubmit={e => { e.preventDefault(); setData([{id: Date.now(), bayi: form.bayi.toUpperCase(), bolge: form.bolge.toUpperCase(), durum: 'Bekliyor', note: ''}, ...data]); setModal({open: false, type: null, id: null}); setForm({bayi:'', bolge:'', note:''}); }}>
+                                        <input className="w-full p-5 bg-slate-50 rounded-2xl border border-slate-100 outline-none text-[11px] font-bold uppercase shadow-inner" placeholder="MÜŞTERİ ÜNVANI" required value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value})} />
+                                        <input className="w-full p-5 bg-slate-50 rounded-2xl border border-slate-100 outline-none text-[11px] font-bold uppercase shadow-inner" placeholder="BÖLGE / İLÇE" required value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} />
+                                        <button type="submit" className="w-full py-5 bg-[#0F172A] text-white rounded-[20px] font-black text-xs uppercase tracking-widest shadow-2xl mt-4 active:scale-95 transition-all">VERİTABANINA EKLE</button>
                                     </form>
                                 )}
                             </div>
@@ -652,7 +380,6 @@
             );
         };
 
-        // Uygulamayı DOM'a Render Etme
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
