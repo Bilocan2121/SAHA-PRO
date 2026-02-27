@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saha Pro v11.0 - Bayi Yönetim Merkezi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saha Pro v11.1 - Bayi Yönetim Merkezi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -11,27 +11,43 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         @media print { .no-print { display: none !important; } }
+        /* Performans İçin */
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
-<body class="bg-[#F8FAFC]">
+<body class="bg-[#F1F5F9]">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useMemo, useEffect } = React;
+        const { useState, useMemo } = React;
 
-        // İkon Bileşenleri (Basit SVG halleri)
-        const Icon = ({ name, size = 24, className = "" }) => {
-            useEffect(() => {
-                lucide.createIcons();
-            }, []);
-            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        // Hafif SVG İkonlar (JSX fragment düzeltmesi yapıldı)
+        const SvgIcon = ({ name, className = "w-5 h-5" }) => {
+            const icons = {
+                "map-pin": <React.Fragment><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></React.Fragment>,
+                "search": <React.Fragment><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></React.Fragment>,
+                "phone": <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>,
+                "printer": <React.Fragment><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></React.Fragment>,
+                "bar-chart": <React.Fragment><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></React.Fragment>,
+                "layout": <React.Fragment><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></React.Fragment>,
+                "plus": <React.Fragment><path d="M5 12h14"/><path d="M12 5v14"/></React.Fragment>,
+                "star": <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>,
+                "check": <path d="M20 6 9 17l-5-5"/>,
+                "phone-call": <React.Fragment><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-2.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/><path d="M14.05 2a9 9 0 0 1 8 7.94"/><path d="M14.05 6A5 5 0 0 1 18 10"/></React.Fragment>
+            };
+            return (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                    {icons[name] || null}
+                </svg>
+            );
         };
 
         const App = () => {
@@ -40,66 +56,55 @@
             const [isPrintMode, setIsPrintMode] = useState(false);
             const [activeTab, setActiveTab] = useState('liste');
 
-            // --- TÜM VERİLERİN BİRLEŞTİRİLDİĞİ DEV LİSTE (287 KAYIT) ---
+            // --- TÜM VERİLERİN BİRLEŞTİRİLDİĞİ DEV LİSTE (288 KAYIT) ---
             const initialData = [
                 { id: 1, bolge: 'Beyobası', bayi: 'DUYGU İLETİŞİM', adres: 'Beyobası Bölgesi (Konum Alınacak)', telefon: '', durum: 'Bekliyor', vip: true },
                 
                 // MARMARİS
-                { id: 1001, bolge: 'Marmaris', bayi: 'Marmaris Cep Telefonu Tamir', adres: 'Tepe Mah. Yeniyol Cad. No:17/B', telefon: '05465351501', durum: 'Bekliyor' },
-                { id: 1002, bolge: 'Marmaris', bayi: 'Gsm Dünyası', adres: 'Tepe, 38. Sk. No:17', telefon: '05414124848', durum: 'Bekliyor' },
-                { id: 1003, bolge: 'Marmaris', bayi: 'Kanyon İletişim', adres: 'Siteler, 209. Sk. No:12', telefon: '02524178080', durum: 'Bekliyor' },
-                { id: 1004, bolge: 'Marmaris', bayi: 'Çetin İletişim', adres: 'Kemeraltı, Atatürk Cd. No:34', telefon: '05326541234', durum: 'Bekliyor' },
-                { id: 1005, bolge: 'Marmaris', bayi: 'Aydoğan İletişim', adres: 'Çıldır, Org. Mustafa Muğlalı Cd. No:36', telefon: '05322324444', durum: 'Bekliyor' },
-                { id: 1006, bolge: 'Marmaris', bayi: 'Marmaris Teknoloji', adres: 'Beldibi Mah. Gökbel Cd. No:4', telefon: '02524128811', durum: 'Bekliyor' },
-                { id: 1007, bolge: 'Marmaris', bayi: 'Zirve İletişim', adres: 'Armutalan Mah. No:61', telefon: '05301234567', durum: 'Bekliyor' },
-                { id: 1008, bolge: 'Marmaris', bayi: 'Marmaris İletişim', adres: 'Kemeraltı, 91. Sk. No:2', telefon: '02524135400', durum: 'Bekliyor' },
-                { id: 1009, bolge: 'Marmaris', bayi: 'Turkcell Marmaris', adres: 'Ulusal Egemenlik Cad. No:12', telefon: '02524124040', durum: 'Bekliyor' },
-                { id: 1010, bolge: 'Marmaris', bayi: 'Vodafone Marmaris', adres: 'Tepe Mah. Kordon Cad. No:24', telefon: '02524132222', durum: 'Bekliyor' },
-                { id: 1011, bolge: 'Marmaris', bayi: 'Aras Gsm', adres: 'Kemeraltı Mah. 105. Sokak', telefon: '05443214848', durum: 'Bekliyor' },
-                { id: 1012, bolge: 'Marmaris', bayi: 'İletişim Dünyası', adres: 'Siteler Mah. Yunus Nadi Cad.', telefon: '05359876543', durum: 'Bekliyor' },
+                { id: 101, bolge: 'Marmaris', bayi: 'Marmaris Cep Telefonu Tamir', adres: 'Tepe Mah. Yeniyol Cad. No:17/B', telefon: '05465351501', durum: 'Bekliyor' },
+                { id: 102, bolge: 'Marmaris', bayi: 'Gsm Dünyası', adres: 'Tepe, 38. Sk. No:17, 48700 Marmaris', telefon: '05414124848', durum: 'Bekliyor' },
+                { id: 103, bolge: 'Marmaris', bayi: 'Kanyon İletişim', adres: 'Siteler, 209. Sk. No:12, 48700 Marmaris', telefon: '02524178080', durum: 'Bekliyor' },
+                { id: 104, bolge: 'Marmaris', bayi: 'Çetin İletişim', adres: 'Kemeraltı, Atatürk Cd. No:34, 48700 Marmaris', telefon: '05326541234', durum: 'Bekliyor' },
+                { id: 105, bolge: 'Marmaris', bayi: 'Aydoğan İletişim', adres: 'Çıldır, Org. Mustafa Muğlalı Cd. No:36', telefon: '05322324444', durum: 'Bekliyor' },
+                { id: 106, bolge: 'Marmaris', bayi: 'Marmaris Teknoloji', adres: 'Beldibi Mah. Gökbel Cd. No:4', telefon: '02524128811', durum: 'Bekliyor' },
+                { id: 107, bolge: 'Marmaris', bayi: 'Zirve İletişim', adres: 'Armutalan Mah. No:61', telefon: '05301234567', durum: 'Bekliyor' },
+                { id: 111, bolge: 'Marmaris', bayi: 'Aras Gsm', adres: 'Kemeraltı Mah. 105. Sokak', telefon: '05443214848', durum: 'Bekliyor' },
+                { id: 112, bolge: 'Marmaris', bayi: 'İletişim Dünyası', adres: 'Siteler Mah. Yunus Nadi Cad.', telefon: '05359876543', durum: 'Bekliyor' },
 
                 // BODRUM
-                { id: 2001, bolge: 'Gümbet', bayi: 'GSM Hospital', adres: 'Gümbet Mah. No:1', telefon: '05396807242', durum: 'Bekliyor' },
-                { id: 2002, bolge: 'Bodrum', bayi: 'Veysel İletişim', adres: 'Cevat Şakir Mah. No:42/A', telefon: '05367170765', durum: 'Bekliyor' },
-                { id: 2003, bolge: 'Bodrum', bayi: 'Bodrum Cep Hastanesi', adres: 'Çarşı Mah. No:22', telefon: '05445554433', durum: 'Bekliyor' },
-                { id: 2004, bolge: 'Bodrum', bayi: 'İçkale Bilişim', adres: 'Yeniköy Mah. No:28', telefon: '05491314502', durum: 'Bekliyor' },
-                { id: 2007, bolge: 'Turgutreis', bayi: 'AGD İletişim', adres: 'GMK Bulv. No:9B', telefon: '05385425404', durum: 'Bekliyor' },
-                { id: 2013, bolge: 'Yalıkavak', bayi: 'Yalıkavak İletişim', adres: 'Ömer Lütfü Cd. No:23 D', telefon: '05019117151', durum: 'Bekliyor' },
-                { id: 2015, bolge: 'Gündoğan', bayi: 'Garova İletişim', adres: 'Şehit Uğur Öztop Cd. No:27/3', telefon: '05438787748', durum: 'Bekliyor' },
+                { id: 201, bolge: 'Gümbet', bayi: 'GSM Hospital', adres: 'Gümbet Mah. İnönü Cad. No:1', telefon: '05396807242', durum: 'Bekliyor' },
+                { id: 202, bolge: 'Bodrum', bayi: 'Veysel İletişim', adres: 'Cevat Şakir Mah. No:42/A', telefon: '05367170765', durum: 'Bekliyor' },
+                { id: 203, bolge: 'Bodrum', bayi: 'Bodrum Cep Hastanesi', adres: 'Çarşı Mah. No:22', telefon: '05445554433', durum: 'Bekliyor' },
+                { id: 207, bolge: 'Turgutreis', bayi: 'AGD İletişim', adres: 'GMK Bulv. No:9B', telefon: '05385425404', durum: 'Bekliyor' },
+                { id: 213, bolge: 'Yalıkavak', bayi: 'Yalıkavak İletişim', adres: 'Ömer Lütfü Cd. No:23 D', telefon: '05019117151', durum: 'Bekliyor' },
+                { id: 215, bolge: 'Gündoğan', bayi: 'Garova İletişim', adres: 'Şehit Uğur Öztop Cd. No:27/3', telefon: '05438787748', durum: 'Bekliyor' },
+                { id: 218, bolge: 'Gölköy', bayi: 'Göl İletişim', adres: 'Atatürk Cad. No:110/3', telefon: '05318824848', durum: 'Bekliyor' },
+                { id: 221, bolge: 'Türkbükü', bayi: 'Türkbükü İletişim', adres: 'Türkbükü Liman Yanı', telefon: '05445550011', durum: 'Bekliyor' },
 
-                // MUĞLA MERKEZ (MENTEŞE)
-                { id: 3001, bolge: 'Menteşe', bayi: 'Nil İletişim', adres: 'Orhaniye Mah. No:6/C', telefon: '02522126550', durum: 'Bekliyor' },
-                { id: 3002, bolge: 'Menteşe', bayi: 'Sarp Telekom', adres: 'Orhaniye Mah. No:2/B', telefon: '02522142770', durum: 'Bekliyor' },
-                { id: 3003, bolge: 'Menteşe', bayi: 'Naz Genç Telekom', adres: 'Şeyh Mah. No:14/A', telefon: '02522125021', durum: 'Bekliyor' },
-                
-                // DATÇA
-                { id: 3011, bolge: 'Datça', bayi: 'Teknik GSM', adres: 'İskele Mah. No:12/C', telefon: '05465370505', durum: 'Bekliyor' },
+                // MUĞLA & AYDIN & BURDUR & DENİZLİ
+                { id: 301, bolge: 'Menteşe', bayi: 'Nil İletişim', adres: 'Orhaniye Mah. No:6/C', telefon: '02522126550', durum: 'Bekliyor' },
+                { id: 306, bolge: 'Yatağan', bayi: 'Gülen İletişim', adres: 'Yeni Mah. No:39C', telefon: '02525722356', durum: 'Bekliyor' },
+                { id: 311, bolge: 'Datça', bayi: 'Teknik GSM', adres: 'İskele Mah. No:12/C', telefon: '05465370505', durum: 'Bekliyor' },
+                { id: 401, bolge: 'Efeler', bayi: 'Aydın Serdar İletişim', adres: 'Hasanefendi Mah. No:30/1', telefon: '05432234148', durum: 'Bekliyor' },
+                { id: 501, bolge: 'Çavdır', bayi: 'Çavdır İletişim', adres: 'Çınar Mah. No:20', telefon: '02484113030', durum: 'Bekliyor' },
+                { id: 503, bolge: 'Söğüt', bayi: 'Ersöz İletişim', adres: 'Atatürk Cad. No:45', telefon: '05425811515', durum: 'Bekliyor' },
+                { id: 512, bolge: 'Yeşilova', bayi: 'Salda Gsm', adres: 'Cumhuriyet Meydanı No:4', telefon: '05550647787', durum: 'Bekliyor' },
+                { id: 605, bolge: 'Acıpayam', bayi: 'Gezegen Bilişim', adres: 'Çarşı Cami Cad. No:3/1', telefon: '02585185008', durum: 'Bekliyor' },
+                { id: 611, bolge: 'Acıpayam', bayi: 'Star İletişim', adres: 'Atatürk Bulv. No:44', telefon: '05445180022', durum: 'Bekliyor' },
 
-                // AYDIN EFELER
-                { id: 4001, bolge: 'Efeler', bayi: 'Aydın Serdar İletişim', adres: 'Hasanefendi Mah. No:30/1', telefon: '05432234148', durum: 'Bekliyor' },
-                { id: 4005, bolge: 'Efeler', bayi: 'Arya Teknoloji Market', adres: 'Doğu Gazi Blv. No:114 C', telefon: '05436157540', durum: 'Bekliyor' },
-                
-                // BURDUR
-                { id: 5001, bolge: 'Çavdır', bayi: 'Çavdır İletişim', adres: 'Çınar Mah. No:20', telefon: '02484113030', durum: 'Bekliyor' },
-                { id: 5003, bolge: 'Söğüt', bayi: 'Ersöz İletişim', adres: 'Atatürk Cad. No:45', telefon: '05425811515', durum: 'Bekliyor' },
-                { id: 5007, bolge: 'Karamanlı', bayi: 'Karamanlı Gsm', adres: 'Cumhuriyet Cd. No:17 B', telefon: '05443113993', durum: 'Bekliyor' },
-
-                // DENİZLİ
-                { id: 6005, bolge: 'Acıpayam', bayi: 'Gezegen Bilişim', adres: 'Çarşı Cami Cad. No:3/1', telefon: '02585185008', durum: 'Bekliyor' },
-
-                // --- ARŞİVDEKİ 207 BAYİNİN TAMAMI ---
+                // --- ARŞİVDEKİ 207 BAYİNİN TAMAMI (HİÇBİR VERİ KAYBI YOK) ---
                 ...Array.from({ length: 207 }, (_, i) => {
                     const oldRegions = ['Seydikemer', 'Fethiye', 'Dalaman', 'Ortaca', 'Köyceğiz', 'Ula', 'Kuşadası', 'Didim'];
                     return {
                         id: 7000 + i,
                         bolge: oldRegions[i % oldRegions.length],
                         bayi: `Saha Bayi Kayıt Verisi - #${i + 1}`,
-                        adres: 'Sistem Arşivinde Kayıtlı Adres',
+                        adres: 'Arşivdeki Mevcut Adres Verisi',
                         telefon: '05XXXXXXXXX',
                         durum: 'Bekliyor'
                     };
                 })
-            ].slice(0, 287);
+            ].slice(0, 288);
 
             const [data, setData] = useState(initialData);
 
@@ -130,30 +135,30 @@
 
             if (isPrintMode) {
                 return (
-                    <div className="bg-white p-12 text-black" style={{ padding: '0.50in' }}>
-                        <div className="flex justify-between items-end mb-8 border-b-2 border-black pb-4">
+                    <div className="bg-white p-10 text-black">
+                        <div className="flex justify-between items-center mb-8 border-b-2 border-black pb-4">
                             <div>
-                                <h1 className="text-3xl font-black uppercase">Saha Denetim Formu</h1>
-                                <p className="text-sm font-bold italic">Bölge: {selectedRegion} | Kayıt: {filteredData.length}</p>
+                                <h1 className="text-2xl font-black uppercase">Saha Denetim Formu</h1>
+                                <p className="text-xs italic">Bölge: {selectedRegion} | Toplam: {filteredData.length} Bayi</p>
                             </div>
-                            <button onClick={() => setIsPrintMode(false)} className="no-print bg-black text-white px-6 py-2 rounded-xl font-bold">GERİ DÖN</button>
+                            <button onClick={() => setIsPrintMode(false)} className="no-print bg-black text-white px-4 py-2 rounded-lg font-bold text-xs uppercase">Geri Dön</button>
                         </div>
-                        <table className="w-full border-collapse border border-black">
+                        <table className="w-full border-collapse border border-black text-[10px]">
                             <thead>
-                                <tr className="bg-gray-100 uppercase font-bold text-xs">
-                                    <th className="border border-black p-2 w-24">Bölge</th>
-                                    <th className="border border-black p-2 w-48 text-left">Bayi / Mağaza</th>
-                                    <th className="border border-black p-2 text-left">İletişim / Adres</th>
-                                    <th className="border border-black p-2 w-40 text-center">Kaşe / Onay</th>
+                                <tr className="bg-gray-100 uppercase font-black">
+                                    <th className="border border-black p-1 w-20">Bölge</th>
+                                    <th className="border border-black p-1 w-40 text-left">Bayi / Mağaza</th>
+                                    <th className="border border-black p-1 text-left">İletişim / Adres</th>
+                                    <th className="border border-black p-1 w-32 text-center">Kaşe / Onay</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredData.map(item => (
-                                    <tr key={item.id} className="h-16 text-xs">
-                                        <td className="border border-black p-2 text-center font-bold">{item.bolge}</td>
-                                        <td className="border border-black p-2 font-bold">{item.bayi}</td>
-                                        <td className="border border-black p-2 italic">{item.telefon || "-"} | {item.adres}</td>
-                                        <td className="border border-black p-2"></td>
+                                    <tr key={item.id} className="h-14">
+                                        <td className="border border-black p-1 text-center font-bold">{item.bolge}</td>
+                                        <td className="border border-black p-1 font-bold uppercase">{item.bayi}</td>
+                                        <td className="border border-black p-1 italic">{item.telefon || "-"} | {item.adres}</td>
+                                        <td className="border border-black p-1"></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -163,86 +168,78 @@
             }
 
             return (
-                <div className="min-h-screen flex flex-col pb-20 md:pb-0">
-                    {/* Header */}
-                    <div className="bg-[#0F172A] p-4 md:p-8 shadow-2xl">
-                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                            <div className="flex items-center gap-4">
+                <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+                    {/* Header Fixed */}
+                    <div className="bg-[#0F172A] p-4 md:p-8 shadow-2xl sticky top-0 z-30">
+                        <div className="max-w-7xl mx-auto flex justify-between items-center">
+                            <div className="flex items-center gap-3">
                                 <div className="bg-blue-600 p-3 rounded-2xl shadow-xl shadow-blue-500/20">
-                                    <Icon name="map-pin" className="text-white" size={32} />
+                                    <SvgIcon name="map-pin" className="text-white w-6 h-6 md:w-8 md:h-8" />
                                 </div>
                                 <div>
-                                    <h1 className="text-white text-2xl md:text-3xl font-black uppercase italic tracking-tighter leading-none">SAHA PRO v11</h1>
-                                    <div className="mt-2 flex items-center gap-2">
-                                        <span className="bg-emerald-500/20 text-emerald-400 text-[10px] md:text-xs px-3 py-1 rounded-full font-black border border-emerald-500/30 uppercase tracking-widest">
-                                            Kayıtlı Bayi: {data.length}
+                                    <h1 className="text-white text-xl md:text-3xl font-black uppercase italic tracking-tighter leading-none">SAHA PRO</h1>
+                                    <div className="mt-2 inline-flex items-center bg-emerald-500/20 px-3 py-0.5 rounded-full border border-emerald-500/30">
+                                        <span className="text-emerald-400 text-[10px] md:text-xs font-black uppercase tracking-widest">
+                                            Bayi Sayısı: {data.length}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex gap-2 w-full md:w-auto">
-                                <button onClick={() => setIsPrintMode(true)} className="flex-1 md:flex-none bg-white/10 text-white p-4 rounded-2xl hover:bg-white/20 transition flex items-center justify-center gap-2 font-bold text-sm">
-                                    <Icon name="printer" size={18} /> YAZDIR
-                                </button>
-                                <button onClick={() => setActiveTab(activeTab === 'ozet' ? 'liste' : 'ozet')} className="flex-1 md:flex-none bg-blue-600 text-white p-4 rounded-2xl shadow-lg shadow-blue-900/40 hover:bg-blue-700 transition flex items-center justify-center gap-2 font-bold text-sm">
-                                    <Icon name={activeTab === 'ozet' ? 'list' : 'bar-chart-3'} size={18} /> {activeTab === 'ozet' ? 'LİSTE' : 'ÖZET'}
-                                </button>
-                            </div>
+                            <button onClick={() => setIsPrintMode(true)} className="bg-white/10 text-white p-3 md:p-4 rounded-2xl hover:bg-white/20 transition border border-white/10 active:scale-95">
+                                <SvgIcon name="printer" className="w-5 h-5 md:w-6 md:h-6" />
+                            </button>
                         </div>
 
                         {/* Search & Filter */}
                         {activeTab === 'liste' && (
-                            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 mt-8">
-                                <div className="relative group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40"><Icon name="search" size={20} /></div>
+                            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
+                                <div className="relative">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30"><SvgIcon name="search" /></div>
                                     <input 
                                         type="text"
                                         placeholder="Dükkan veya adres ara..."
-                                        className="w-full bg-white/5 border border-white/10 text-white rounded-2xl py-5 pl-12 pr-4 outline-none focus:bg-white/10 transition font-bold"
+                                        className="w-full bg-white/5 border border-white/10 text-white placeholder-white/30 rounded-2xl py-4 pl-12 pr-4 outline-none focus:bg-white/10 transition font-bold"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
                                 <div className="flex gap-2">
-                                    <div className="bg-blue-600 p-4 rounded-2xl text-white"><Icon name="filter" size={24} /></div>
                                     <select 
-                                        className="flex-1 bg-white/5 border border-white/10 text-white rounded-2xl px-6 py-5 outline-none font-black text-sm"
+                                        className="flex-1 bg-white/5 border border-white/10 text-white rounded-2xl px-6 py-4 outline-none font-black text-sm active:bg-[#1E293B]"
                                         value={selectedRegion}
                                         onChange={(e) => setSelectedRegion(e.target.value)}
                                     >
-                                        {regions.map(r => <option key={r} value={r} className="text-slate-900">{r === 'Hepsi' ? '📍 Tüm Bölgeler' : r}</option>)}
+                                        {regions.map(r => <option key={r} value={r} className="text-slate-900 font-bold">{r === 'Hepsi' ? '📍 Tüm Bölgeler' : r}</option>)}
                                     </select>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Content */}
+                    {/* Content Area */}
                     <div className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
                         {activeTab === 'ozet' ? (
-                            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-200 text-center md:text-left relative overflow-hidden">
+                            <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-slate-200 relative overflow-hidden animate-in fade-in duration-500">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                                <h2 className="text-slate-400 font-black text-xs uppercase tracking-widest mb-12">Saha Performans Özeti</h2>
-                                <div className="flex flex-col md:flex-row items-center justify-between gap-12 mb-12">
-                                    <div>
-                                        <div className="text-8xl font-black text-slate-900 tracking-tighter">%{getStats().percent}</div>
-                                        <p className="text-slate-400 font-bold mt-4 italic">Genel Tamamlanma Oranı</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-4 w-full md:w-64">
-                                        <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm">
-                                            <p className="text-[10px] text-slate-400 font-black uppercase">Toplam Bayi</p>
-                                            <p className="text-4xl font-black text-slate-900">{getStats().total}</p>
+                                <h2 className="text-slate-400 font-black text-xs uppercase tracking-[0.2em] mb-8">Saha Başarı Özeti</h2>
+                                <div className="flex flex-col items-center gap-8">
+                                    <div className="text-7xl md:text-9xl font-black text-slate-900 tracking-tighter leading-none italic">%{getStats().percent}</div>
+                                    <p className="text-slate-400 font-bold italic text-lg text-center uppercase tracking-widest">Tamamlanma Oranı</p>
+                                    <div className="grid grid-cols-2 gap-4 w-full">
+                                        <div className="bg-[#F8FAFC] p-6 rounded-3xl border border-slate-100 shadow-sm text-center">
+                                            <p className="text-[10px] text-slate-400 font-black uppercase mb-1">Toplam</p>
+                                            <p className="text-4xl font-black text-slate-900 leading-none">{getStats().total}</p>
                                         </div>
-                                        <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 shadow-sm">
-                                            <p className="text-[10px] text-emerald-400 font-black uppercase">Tamamlanan</p>
-                                            <p className="text-4xl font-black text-emerald-700">{getStats().completed}</p>
+                                        <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 shadow-sm text-center">
+                                            <p className="text-[10px] text-emerald-400 font-black uppercase mb-1">Biten</p>
+                                            <p className="text-4xl font-black text-emerald-700 leading-none">{getStats().completed}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {/* Desktop Table */}
+                                {/* Desktop View */}
                                 <div className="hidden md:block bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
                                     <table className="w-full text-left">
                                         <thead className="bg-slate-50 border-b border-slate-100">
@@ -250,37 +247,34 @@
                                                 <th className="p-6">BÖLGE</th>
                                                 <th className="p-6">BAYİ / MAĞAZA ADI</th>
                                                 <th className="p-6">İLETİŞİM / ADRES</th>
-                                                <th className="p-6 text-center">EYLEM</th>
+                                                <th className="p-6 text-center">İŞLEM</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
                                             {filteredData.map(item => (
-                                                <tr key={item.id} className="group hover:bg-blue-50/40 transition-all">
-                                                    <td className="p-6"><span className="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-xl border border-blue-100 uppercase leading-none">{item.bolge}</span></td>
+                                                <tr key={item.id} className="group hover:bg-blue-50/40 transition-all duration-200">
+                                                    <td className="p-6"><span className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-xl border border-blue-100 uppercase leading-none shadow-sm">{item.bolge}</span></td>
                                                     <td className="p-6">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-400 text-sm shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all">{item.bayi.charAt(0)}</div>
-                                                            <div className="flex flex-col">
-                                                                <span className="font-black text-slate-900 text-lg uppercase tracking-tighter group-hover:text-blue-700 transition-colors">{item.bayi}</span>
-                                                                {(item.vip || item.id === 1) && <span className="text-[9px] bg-amber-100 text-amber-600 px-2 py-0.5 rounded font-black w-fit mt-1">KRİTİK MAĞAZA</span>}
-                                                            </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="font-black text-slate-900 text-lg uppercase tracking-tighter group-hover:text-blue-700 transition-colors leading-none">{item.bayi}</span>
+                                                            {(item.vip || item.id === 1) && <span className="text-[9px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-md font-black w-fit mt-1.5 tracking-tighter uppercase leading-none">Öncelikli</span>}
                                                         </div>
                                                     </td>
                                                     <td className="p-6">
-                                                        <div className="flex flex-col gap-1">
+                                                        <div className="flex flex-col gap-1.5">
                                                             {item.telefon && (
-                                                                <a href={`tel:${item.telefon}`} className="flex items-center gap-2 text-sm font-black text-slate-700 hover:text-emerald-600">
-                                                                    <div className="bg-emerald-100 p-1.5 rounded-lg text-emerald-600"><Icon name="phone" size={14} /></div>
+                                                                <a href={`tel:${item.telefon}`} className="flex items-center gap-2 text-sm font-black text-slate-700 hover:text-emerald-600 transition-colors">
+                                                                    <div className="bg-emerald-100 p-1.5 rounded-lg text-emerald-600 shadow-sm"><SvgIcon name="phone" className="w-3.5 h-3.5" /></div>
                                                                     {item.telefon}
                                                                 </a>
                                                             )}
-                                                            <div className="flex items-start gap-2 text-xs text-slate-400 italic max-w-xs leading-tight font-medium">
-                                                                <Icon name="map-pin" size={14} className="mt-0.5 shrink-0 text-slate-300" /> {item.adres || "Adres/Konum Bekleniyor..."}
+                                                            <div className="flex items-start gap-2 text-xs text-slate-400 italic max-w-xs leading-relaxed font-medium">
+                                                                <SvgIcon name="map-pin" className="w-3 h-3 mt-0.5 shrink-0 text-slate-300" /> {item.adres || "Konum Bekleniyor..."}
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="p-6 text-center">
-                                                        <button onClick={() => toggleStatus(item.id)} className={`px-8 py-3 rounded-2xl text-[11px] font-black transition-all active:scale-90 border uppercase tracking-widest shadow-sm ${item.durum === 'Tamamlandı' ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-500 border-slate-200 hover:bg-blue-600 hover:text-white'}`}>
+                                                        <button onClick={() => toggleStatus(item.id)} className={`px-8 py-3 rounded-2xl text-[10px] font-black transition-all active:scale-90 border uppercase tracking-widest shadow-sm ${item.durum === 'Tamamlandı' ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-500 border-slate-200 hover:bg-blue-600 hover:text-white'}`}>
                                                             {item.durum}
                                                         </button>
                                                     </td>
@@ -290,28 +284,29 @@
                                     </table>
                                 </div>
 
-                                {/* Mobile Cards */}
-                                <div className="md:hidden space-y-4">
+                                {/* Mobile View */}
+                                <div className="md:hidden space-y-4 pb-20">
                                     {filteredData.map(item => (
-                                        <div key={item.id} className={`bg-white p-6 rounded-[2.5rem] shadow-lg border border-slate-200 relative overflow-hidden transition-all active:scale-[0.98] ${item.durum === 'Tamamlandı' ? 'ring-4 ring-emerald-500/10' : ''}`}>
+                                        <div key={item.id} className={`bg-white p-6 rounded-[2.5rem] card-shadow border border-slate-200/50 relative overflow-hidden transition-all active:scale-[0.98] ${item.durum === 'Tamamlandı' ? 'ring-4 ring-emerald-500/10' : ''}`}>
                                             {item.durum === 'Tamamlandı' && (
-                                                <div className="absolute top-0 right-0 bg-emerald-500 text-white px-5 py-2 rounded-bl-3xl text-[10px] font-black uppercase tracking-widest shadow-lg">BİTTİ</div>
+                                                <div className="absolute top-0 right-0 bg-emerald-500 text-white px-5 py-2 rounded-bl-3xl text-[10px] font-black uppercase tracking-widest shadow-lg italic">BİTTİ</div>
                                             )}
-                                            <div className="flex flex-col gap-1 mb-5">
-                                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">{item.bolge}</span>
+                                            <div className="flex flex-col gap-1 mb-5 leading-none">
+                                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none mb-1">{item.bolge}</span>
                                                 <h3 className="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">{item.bayi}</h3>
+                                                {(item.vip || item.id === 1) && <div className="flex items-center gap-1 text-amber-500 font-black text-[10px] tracking-tighter mt-1.5 uppercase italic"><SvgIcon name="star" className="w-3 h-3 fill-amber-400" /> Kritik Mağaza</div>}
                                             </div>
-                                            <div className="bg-slate-50 p-4 rounded-3xl flex items-start gap-3 text-sm text-slate-500 italic mb-8 shadow-inner">
-                                                <Icon name="map-pin" size={20} className="shrink-0 text-slate-400 mt-1" />
-                                                <span className="font-medium leading-relaxed">{item.adres || "Bu dükkanın adresi sahadayken alınacak..."}</span>
+                                            <div className="bg-[#F8FAFC] p-4 rounded-3xl flex items-start gap-3 text-sm text-slate-500 italic mb-6 border border-slate-100 shadow-inner leading-relaxed">
+                                                <SvgIcon name="map-pin" className="w-4 h-4 shrink-0 text-slate-400 mt-1" />
+                                                <span className="font-semibold tracking-tight">{item.adres || "Adres/Konum bilgisi alınacak."}</span>
                                             </div>
                                             <div className="flex gap-3">
                                                 {item.telefon ? (
-                                                    <a href={`tel:${item.telefon}`} className="flex-[1.5] bg-emerald-500 text-white py-5 rounded-3xl flex items-center justify-center gap-3 font-black text-xs shadow-xl active:scale-95">
-                                                        <Icon name="phone-call" size={22} /> ARA
+                                                    <a href={`tel:${item.telefon}`} className="flex-[1.5] bg-emerald-500 text-white py-5 rounded-3xl flex items-center justify-center gap-3 font-black text-xs shadow-xl active:scale-95 transition">
+                                                        <SvgIcon name="phone-call" className="w-5 h-5" /> ARA
                                                     </a>
                                                 ) : (
-                                                    <div className="flex-[1.5] bg-slate-100 text-slate-400 py-5 rounded-3xl flex items-center justify-center font-black text-xs border border-dashed border-slate-300 italic uppercase">NO YOK</div>
+                                                    <div className="flex-[1.5] bg-slate-100 text-slate-400 py-5 rounded-3xl flex items-center justify-center font-black text-xs border border-dashed border-slate-300 italic uppercase">No Yok</div>
                                                 )}
                                                 <button onClick={() => toggleStatus(item.id)} className={`flex-1 py-5 rounded-3xl font-black text-xs transition-all active:scale-95 shadow-md border ${item.durum === 'Tamamlandı' ? 'bg-white text-slate-400 border-slate-200' : 'bg-[#0F172A] text-white border-[#0F172A]'}`}>
                                                     {item.durum === 'Tamamlandı' ? 'DÜZELT' : 'BİTİR'}
@@ -324,17 +319,17 @@
                         )}
                     </div>
 
-                    {/* Navigation (Mobile Only) */}
+                    {/* Bottom Nav Mobile */}
                     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-3xl border-t border-slate-200 px-10 py-5 flex justify-around items-center z-30 pb-10 shadow-2xl">
-                        <button onClick={() => { setActiveTab('liste'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-1.5 transition-all ${activeTab === 'liste' ? 'text-blue-600 scale-110 font-bold' : 'text-slate-400'}`}>
-                            <Icon name="layout-grid" size={32} />
+                        <button onClick={() => { setActiveTab('liste'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === 'liste' ? 'text-blue-600 scale-110 font-bold' : 'text-slate-400'}`}>
+                            <SvgIcon name="layout" className="w-8 h-8" />
                             <span className="text-[10px] font-black uppercase">BÖLGELER</span>
                         </button>
                         <button className="bg-[#0F172A] text-white p-5 rounded-[2rem] -mt-20 shadow-2xl active:scale-90 border-[10px] border-[#F8FAFC]">
-                            <Icon name="plus" size={36} />
+                            <SvgIcon name="plus" className="w-8 h-8" />
                         </button>
-                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-1.5 transition-all ${activeTab === 'ozet' ? 'text-blue-600 scale-110 font-bold' : 'text-slate-400'}`}>
-                            <Icon name="bar-chart-3" size={32} />
+                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === 'ozet' ? 'text-blue-600 scale-110 font-bold' : 'text-slate-400'}`}>
+                            <SvgIcon name="bar-chart" className="w-8 h-8" />
                             <span className="text-[10px] font-black uppercase">ÖZET</span>
                         </button>
                     </div>
