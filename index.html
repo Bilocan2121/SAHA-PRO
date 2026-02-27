@@ -21,7 +21,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Devasa Gölgeler ve Kartlar */
+        /* Yüksek Kontrast ve Büyük Kartlar */
         .ultra-shadow {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
@@ -36,16 +36,19 @@
             border-bottom-width: 2px;
         }
 
-        /* Navigasyon barı sabitleme ve alan açma */
-        .bottom-nav-v3 {
-            background: #ffffff;
-            border-top: 5px solid #2563eb;
-            padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+        /* Alttaki menünün dükkanları kapatmasını engelleme */
+        .safe-bottom-padding {
+            padding-bottom: 180px;
         }
 
-        /* Okunabilirlik için dev fontlar */
+        .bottom-nav-v4 {
+            background: #ffffff;
+            border-top: 5px solid #2563eb;
+            padding-bottom: calc(env(safe-area-inset-bottom) + 15px);
+        }
+
         .hero-title {
-            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-size: 2.5rem;
             font-weight: 900;
             letter-spacing: -0.05em;
         }
@@ -54,13 +57,6 @@
             font-size: 18px !important;
             border-width: 3px !important;
         }
-
-        /* Animasyonlar */
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
         @media print { .no-print { display: none !important; } }
     </style>
@@ -71,7 +67,7 @@
     <script type="text/babel">
         const { useState, useMemo, memo, useEffect, useCallback } = React;
 
-        // Yüksek Kontrastlı SVG İkonlar
+        // Yüksek Görünürlüklü SVG İkonlar
         const SvgIcon = ({ name, size = 24, className = "" }) => {
             const icons = {
                 "map": <React.Fragment><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></React.Fragment>,
@@ -93,59 +89,59 @@
         };
 
         const BayiCard = memo(({ item, onToggle, onRemove }) => (
-            <div className={`bg-white rounded-[3rem] border-4 mb-8 p-8 ultra-shadow transition-all ${item.durum === 'Tamamlandı' ? 'border-emerald-500 opacity-95 bg-emerald-50/10' : 'border-white'}`}>
+            <div className={`bg-white rounded-[3.5rem] border-4 mb-8 p-8 ultra-shadow transition-all ${item.durum === 'Tamamlandı' ? 'border-emerald-500 opacity-95 bg-emerald-50/20' : 'border-white'}`}>
                 <div className="flex justify-between items-start mb-6">
                     <div className="flex-1">
-                        <div className="flex items-center gap-4 flex-wrap">
-                            <span className="bg-blue-700 text-white px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest">{item.bolge}</span>
+                        <div className="flex items-center gap-4">
+                            <span className="bg-blue-700 text-white px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest">{item.bolge}</span>
                             {item.durum === 'Tamamlandı' && (
                                 <span className="flex items-center gap-2 text-emerald-600 font-black text-sm uppercase">
-                                    <SvgIcon name="check" size={18} /> BİTTİ
+                                    <SvgIcon name="check" size={20} /> BİTTİ
                                 </span>
                             )}
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 leading-none uppercase mt-4 mb-2 tracking-tighter italic">
+                        <h2 className="text-4xl font-black text-slate-900 leading-none uppercase mt-5 mb-3 tracking-tighter italic">
                             {item.bayi}
                         </h2>
                         {(item.vip || item.id === 1) && (
-                            <div className="flex items-center gap-2 text-amber-600 font-black text-xs uppercase tracking-tighter">
+                            <div className="flex items-center gap-2 text-amber-600 font-black text-sm uppercase tracking-tighter">
                                 <SvgIcon name="star" size={20} className="fill-amber-500" /> KRİTİK İŞLEM NOKTASI
                             </div>
                         )}
                     </div>
-                    <button onClick={() => onRemove(item.id)} className="p-4 bg-rose-100 text-rose-600 rounded-[1.5rem] active:bg-rose-600 active:text-white transition-colors">
-                        <SvgIcon name="trash" size={28} />
+                    <button onClick={() => onRemove(item.id)} className="p-4 bg-rose-100 text-rose-600 rounded-[1.8rem] active:bg-rose-600 active:text-white transition-colors">
+                        <SvgIcon name="trash" size={32} />
                     </button>
                 </div>
                 
-                <div className="bg-slate-100/80 p-6 rounded-[2rem] mb-8 border-2 border-slate-200">
-                    <div className="flex items-start gap-4">
-                        <SvgIcon name="map" size={24} className="text-slate-500 mt-1 shrink-0" />
-                        <span className="text-xl font-bold text-slate-700 leading-tight uppercase italic">
+                <div className="bg-slate-100/80 p-8 rounded-[2.5rem] mb-10 border-2 border-slate-200">
+                    <div className="flex items-start gap-5">
+                        <SvgIcon name="map" size={28} className="text-slate-500 mt-1 shrink-0" />
+                        <span className="text-2xl font-bold text-slate-700 leading-tight uppercase italic">
                             {item.adres || "ADRES KAYDI BEKLENİYOR"}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-5">
                     {item.telefon ? (
-                        <a href={`tel:${item.telefon}`} className="w-full bg-emerald-500 text-white py-8 rounded-[2rem] flex items-center justify-center gap-4 text-2xl font-black shadow-xl shadow-emerald-500/30 btn-action uppercase">
-                            <SvgIcon name="phone" size={32} /> {item.telefon}
+                        <a href={`tel:${item.telefon}`} className="w-full bg-emerald-500 text-white py-10 rounded-[2.5rem] flex items-center justify-center gap-5 text-3xl font-black shadow-2xl shadow-emerald-500/40 btn-action uppercase">
+                            <SvgIcon name="phone" size={40} /> {item.telefon}
                         </a>
                     ) : (
-                        <div className="w-full bg-slate-200 text-slate-400 py-7 rounded-[2rem] flex items-center justify-center gap-2 text-xl font-black uppercase italic">
+                        <div className="w-full bg-slate-200 text-slate-400 py-8 rounded-[2.5rem] flex items-center justify-center gap-2 text-2xl font-black uppercase italic">
                             NUMARA YOK
                         </div>
                     )}
                     <button 
                         onClick={() => onToggle(item.id)} 
-                        className={`w-full py-8 rounded-[2rem] text-2xl font-black transition-all border-[6px] btn-action ${
+                        className={`w-full py-10 rounded-[2.5rem] text-3xl font-black transition-all border-[8px] btn-action ${
                             item.durum === 'Tamamlandı' 
                             ? 'bg-slate-900 text-white border-slate-900' 
                             : 'bg-white text-slate-900 border-slate-900 active:bg-slate-900 active:text-white'
                         }`}
                     >
-                        {item.durum === 'Tamamlandı' ? 'DÜZELT' : 'BİTİR'}
+                        {item.durum === 'Tamamlandı' ? 'ZİYARETİ DÜZELT' : 'ZİYARETİ BİTİR'}
                     </button>
                 </div>
             </div>
@@ -159,8 +155,9 @@
             const [isAddModalOpen, setIsAddModalOpen] = useState(false);
             const [newBayi, setNewBayi] = useState({ bayi: '', bolge: '', adres: '', telefon: '' });
 
+            // Verileri Yükle & Kaydet (Local Storage)
             useEffect(() => {
-                const saved = localStorage.getItem('saha_pro_v18_db');
+                const saved = localStorage.getItem('saha_pro_v18_final_db');
                 if (saved) {
                     setData(JSON.parse(saved));
                 } else {
@@ -173,14 +170,14 @@
                         { id: 6, bolge: 'Bodrum', bayi: 'GSM HOSPITAL', adres: 'Gümbet Mah. No:1', telefon: '05396807242', durum: 'Bekliyor' },
                         { id: 7, bolge: 'Efeler', bayi: 'EGETEL BİLAL (VIP)', adres: 'Adnan Menderes Blv. 46D', telefon: '05363442434', durum: 'Bekliyor', vip: true },
                         ...Array.from({ length: 393 }, (_, i) => {
-                            const regions = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası'];
+                            const regions = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Seydikemer'];
                             const reg = regions[i % regions.length];
                             return {
-                                id: 50000 + i,
+                                id: 60000 + i,
                                 bolge: reg,
-                                bayi: `${reg} Mağazası #${i + 8}`,
-                                adres: `${reg} Bölgesi Kayıtlı Adres`,
-                                telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`,
+                                bayi: `${reg.toUpperCase()} Mağazası #${i + 8}`,
+                                adres: `${reg} Bölgesi Arşivlenmiş Adres Kaydı`,
+                                telefon: `05${Math.floor(100000000 + Math.random() * 800000000)}`,
                                 durum: 'Bekliyor'
                             };
                         })
@@ -190,11 +187,11 @@
             }, []);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v18_db', JSON.stringify(data));
+                if (data.length > 0) localStorage.setItem('saha_pro_v18_final_db', JSON.stringify(data));
             }, [data]);
 
             const toggleStatus = useCallback((id) => setData(prev => prev.map(item => item.id === id ? { ...item, durum: item.durum === 'Bekliyor' ? 'Tamamlandı' : 'Bekliyor' } : item)), []);
-            const removeBayi = useCallback((id) => { if(confirm('Bu dükkanı tamamen silmek istediğine emin misin?')) setData(prev => prev.filter(item => item.id !== id)); }, []);
+            const removeBayi = useCallback((id) => { if(confirm('Bu dükkanı listeden tamamen sileyim mi?')) setData(prev => prev.filter(item => item.id !== id)); }, []);
             
             const addNewBayi = (e) => {
                 e.preventDefault();
@@ -202,7 +199,6 @@
                 setData([item, ...data]);
                 setIsAddModalOpen(false);
                 setNewBayi({ bayi: '', bolge: '', adres: '', telefon: '' });
-                window.scrollTo(0,0);
             };
 
             const regions = useMemo(() => ['Hepsi', ...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -223,39 +219,39 @@
             }, [data]);
 
             return (
-                <div className="min-h-screen flex flex-col pb-44">
-                    {/* Header: Dark / High-Vis */}
-                    <div className="bg-[#0f172a] pt-16 pb-12 px-8 sticky top-0 z-40 border-b-[6px] border-blue-600 shadow-2xl">
-                        <div className="max-w-4xl mx-auto space-y-8">
+                <div className="min-h-screen flex flex-col">
+                    {/* Header: SAHA PRO v18.0 */}
+                    <div className="bg-[#0f172a] pt-16 pb-14 px-8 sticky top-0 z-40 border-b-[8px] border-blue-600 shadow-2xl">
+                        <div className="max-w-4xl mx-auto space-y-10">
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h1 className="hero-title text-white leading-none uppercase italic">SAHA PRO</h1>
-                                    <p className="text-blue-400 font-black text-lg tracking-[0.2em] mt-3 uppercase">OPERASYON MERKEZİ v18.0</p>
+                                    <p className="text-blue-400 font-black text-xl tracking-[0.2em] mt-4 uppercase">v18.0 PROFESYONEL PANELI</p>
                                 </div>
-                                <div className="bg-emerald-500 text-white px-6 py-3 rounded-[1.5rem] font-[900] text-xl shadow-2xl animate-pulse">
-                                    {data.length} NOKTA
+                                <div className="bg-emerald-500 text-white px-8 py-3 rounded-[2rem] font-[950] text-2xl shadow-2xl">
+                                    {data.length} BAYİ
                                 </div>
                             </div>
 
                             {activeTab === 'liste' && (
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     <div className="relative">
-                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400"><SvgIcon name="search" size={28} /></div>
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400"><SvgIcon name="search" size={32} /></div>
                                         <input 
                                             type="text" 
                                             placeholder="DÜKKAN VEYA NUMARA ARA..." 
-                                            className="w-full bg-slate-800 text-white rounded-[2rem] py-7 pl-16 pr-8 outline-none focus:ring-8 focus:ring-blue-600/30 font-black text-2xl uppercase tracking-tighter shadow-inner" 
+                                            className="w-full bg-slate-800 text-white rounded-[2.5rem] py-8 pl-16 pr-8 outline-none focus:ring-8 focus:ring-blue-600/30 font-black text-2xl uppercase tracking-tighter" 
                                             value={searchTerm} 
                                             onChange={(e) => setSearchTerm(e.target.value)} 
                                         />
                                     </div>
                                     <div className="relative">
                                         <select 
-                                            className="w-full bg-blue-600 text-white rounded-[2rem] py-7 px-10 outline-none font-black text-2xl appearance-none text-center uppercase tracking-widest cursor-pointer shadow-xl border-b-8 border-blue-800 active:translate-y-1 active:border-b-4 transition-all"
+                                            className="w-full bg-blue-600 text-white rounded-[2.5rem] py-8 px-10 outline-none font-black text-3xl appearance-none text-center uppercase tracking-widest shadow-xl border-b-8 border-blue-800 active:translate-y-1 transition-all"
                                             value={selectedRegion}
                                             onChange={(e) => setSelectedRegion(e.target.value)}
                                         >
-                                            {regions.map(r => <option key={r} value={r} className="text-slate-900">{r === 'Hepsi' ? '📍 TÜM BÖLGELERİ LİSTELE' : `📍 ${r.toUpperCase()}`}</option>)}
+                                            {regions.map(r => <option key={r} value={r} className="text-slate-900">{r === 'Hepsi' ? '📍 TÜM BÖLGELER' : `📍 ${r.toUpperCase()}`}</option>)}
                                         </select>
                                     </div>
                                 </div>
@@ -263,79 +259,79 @@
                         </div>
                     </div>
 
-                    {/* Content Section */}
+                    {/* Main Content Area */}
                     <div className="flex-1 p-8 max-w-4xl mx-auto w-full">
                         {activeTab === 'ozet' ? (
-                            <div className="space-y-10 animate-slide-up">
-                                <div className="bg-white p-12 rounded-[4.5rem] text-center ultra-shadow border-8 border-slate-50">
-                                    <h2 className="text-slate-400 font-black text-lg uppercase tracking-[0.4em] mb-6 italic">Saha Başarı Oranı</h2>
-                                    <div className="text-[14rem] font-[950] text-slate-900 tracking-tighter leading-none italic select-none">%{stats.pct}</div>
-                                    <div className="h-8 bg-slate-100 rounded-full w-full mt-14 overflow-hidden border-4 border-white shadow-inner">
-                                        <div className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 transition-all duration-1000 shadow-lg" style={{ width: `${stats.pct}%` }}></div>
+                            <div className="space-y-12">
+                                <div className="bg-white p-16 rounded-[5rem] text-center ultra-shadow border-8 border-slate-50">
+                                    <h2 className="text-slate-400 font-black text-2xl uppercase tracking-[0.4em] mb-10 italic">SAHA BAŞARI ORANI</h2>
+                                    <div className="text-[16rem] font-[950] text-slate-900 tracking-tighter leading-none italic select-none">%{stats.pct}</div>
+                                    <div className="h-12 bg-slate-100 rounded-full w-full mt-16 overflow-hidden border-4 border-white shadow-inner">
+                                        <div className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 transition-all duration-1000 shadow-xl" style={{ width: `${stats.pct}%` }}></div>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 gap-6 uppercase">
-                                    <div className="bg-slate-900 p-10 rounded-[3.5rem] text-white flex justify-between items-center px-14 shadow-2xl">
-                                        <span className="text-2xl font-black italic">TOPLAM BAYİ</span>
-                                        <span className="text-7xl font-black">{stats.total}</span>
+                                <div className="grid grid-cols-1 gap-8 uppercase">
+                                    <div className="bg-slate-900 p-12 rounded-[4rem] text-white flex justify-between items-center px-16 shadow-2xl">
+                                        <span className="text-3xl font-black italic">TOPLAM BAYİ</span>
+                                        <span className="text-8xl font-black">{stats.total}</span>
                                     </div>
-                                    <div className="bg-emerald-600 p-10 rounded-[3.5rem] text-white flex justify-between items-center px-14 shadow-2xl">
-                                        <span className="text-2xl font-black italic">BİTEN ZİYARET</span>
-                                        <span className="text-7xl font-black">{stats.done}</span>
+                                    <div className="bg-emerald-600 p-12 rounded-[4rem] text-white flex justify-between items-center px-16 shadow-2xl">
+                                        <span className="text-3xl font-black italic">BİTEN ZİYARET</span>
+                                        <span className="text-8xl font-black">{stats.done}</span>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="space-y-2">
+                            <div className="space-y-4 safe-bottom-padding">
                                 {filteredData.length > 0 ? (
                                     filteredData.map(item => <BayiCard key={item.id} item={item} onToggle={toggleStatus} onRemove={removeBayi} />)
                                 ) : (
-                                    <div className="py-40 text-center flex flex-col items-center gap-8 opacity-20 grayscale">
-                                        <SvgIcon name="search" size={120} />
-                                        <p className="font-black text-4xl uppercase tracking-[0.2em] italic">BULUNAMADI</p>
+                                    <div className="py-52 text-center flex flex-col items-center gap-10 opacity-20 grayscale">
+                                        <SvgIcon name="search" size={160} />
+                                        <p className="font-black text-6xl uppercase tracking-[0.2em] italic">BULUNAMADI</p>
                                     </div>
                                 )}
                             </div>
                         )}
                     </div>
 
-                    {/* Add Modal (Full Width Style) */}
+                    {/* Dükkan Ekleme Ekranı (TAM SAYFA STİLİ) */}
                     {isAddModalOpen && (
-                        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/98 backdrop-blur-3xl">
-                            <div className="bg-white w-full max-w-2xl rounded-t-[5rem] p-12 shadow-2xl animate-slide-up">
-                                <div className="flex justify-between items-center mb-12">
-                                    <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">YENİ DÜKKAN</h2>
-                                    <button onClick={() => setIsAddModalOpen(false)} className="p-6 bg-slate-100 rounded-full text-slate-500 active:bg-rose-500 active:text-white transition-all shadow-lg"><SvgIcon name="close" size={40} /></button>
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-slate-900/98 backdrop-blur-3xl">
+                            <div className="bg-white w-full max-w-2xl rounded-[4rem] p-12 shadow-2xl animate-in slide-in-from-bottom duration-500">
+                                <div className="flex justify-between items-center mb-16">
+                                    <h2 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">YENİ DÜKKAN</h2>
+                                    <button onClick={() => setIsAddModalOpen(false)} className="p-8 bg-slate-100 rounded-full text-slate-500 active:bg-rose-500 active:text-white transition-all shadow-lg"><SvgIcon name="close" size={48} /></button>
                                 </div>
-                                <form onSubmit={addNewBayi} className="space-y-8">
-                                    <input type="text" placeholder="DÜKKAN ADI (Örn: PASPATUR)" required className="w-full bg-slate-50 rounded-[2.5rem] p-8 font-black text-2xl outline-none border-[6px] border-transparent focus:border-blue-600 uppercase shadow-inner" value={newBayi.bayi} onChange={e => setNewBayi({...newBayi, bayi: e.target.value.toUpperCase()})} />
-                                    <input type="text" placeholder="BÖLGE (Örn: MARMARİS)" required className="w-full bg-slate-50 rounded-[2.5rem] p-8 font-black text-2xl outline-none border-[6px] border-transparent focus:border-blue-600 uppercase shadow-inner" value={newBayi.bolge} onChange={e => setNewBayi({...newBayi, bolge: e.target.value})} />
-                                    <input type="tel" placeholder="TELEFON" className="w-full bg-slate-50 rounded-[2.5rem] p-8 font-black text-2xl outline-none border-[6px] border-transparent focus:border-blue-600 shadow-inner" value={newBayi.telefon} onChange={e => setNewBayi({...newBayi, telefon: e.target.value})} />
-                                    <textarea placeholder="ADRES NOTU" className="w-full bg-slate-50 rounded-[2.5rem] p-8 font-black text-2xl outline-none border-[6px] border-transparent focus:border-blue-600 shadow-inner h-32" value={newBayi.adres} onChange={e => setNewBayi({...newBayi, adres: e.target.value})} />
-                                    <button type="submit" className="w-full bg-blue-600 text-white py-10 rounded-[3rem] font-black text-3xl uppercase shadow-2xl btn-action active:scale-95 transition-all mb-4">LİSTEYE EKLE</button>
+                                <form onSubmit={addNewBayi} className="space-y-10">
+                                    <input type="text" placeholder="DÜKKAN ADI (Örn: PASPATUR)" required className="w-full bg-slate-50 rounded-[3rem] p-10 font-black text-3xl outline-none border-[6px] border-transparent focus:border-blue-600 uppercase shadow-inner" value={newBayi.bayi} onChange={e => setNewBayi({...newBayi, bayi: e.target.value.toUpperCase()})} />
+                                    <input type="text" placeholder="BÖLGE (Örn: MARMARİS)" required className="w-full bg-slate-50 rounded-[3rem] p-10 font-black text-3xl outline-none border-[6px] border-transparent focus:border-blue-600 uppercase shadow-inner" value={newBayi.bolge} onChange={e => setNewBayi({...newBayi, bolge: e.target.value})} />
+                                    <input type="tel" placeholder="TELEFON" className="w-full bg-slate-50 rounded-[3rem] p-10 font-black text-3xl outline-none border-[6px] border-transparent focus:border-blue-600 shadow-inner" value={newBayi.telefon} onChange={e => setNewBayi({...newBayi, telefon: e.target.value})} />
+                                    <textarea placeholder="ADRES NOTU" className="w-full bg-slate-50 rounded-[3rem] p-10 font-black text-3xl outline-none border-[6px] border-transparent focus:border-blue-600 shadow-inner h-44" value={newBayi.adres} onChange={e => setNewBayi({...newBayi, adres: e.target.value})} />
+                                    <button type="submit" className="w-full bg-blue-600 text-white py-10 rounded-[3.5rem] font-black text-4xl uppercase shadow-2xl active:scale-95 transition-all mb-4">SİSTEME KAYDET</button>
                                 </form>
                             </div>
                         </div>
                     )}
 
-                    {/* Bottom Nav: Power Mode */}
-                    <div className="fixed bottom-0 left-0 right-0 bottom-nav-v3 flex justify-around items-center z-50 px-8 py-8 shadow-[0_-30px_60px_rgba(0,0,0,0.2)]">
-                        <button onClick={() => { setActiveTab('liste'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-3 transition-all ${activeTab === 'liste' ? 'text-blue-600 scale-110' : 'text-slate-400'}`}>
-                            <div className={`p-6 rounded-[2.5rem] transition-all ${activeTab === 'liste' ? 'bg-blue-100 shadow-inner border-2 border-blue-200' : ''}`}>
-                                <SvgIcon name="grid" size={42} />
+                    {/* Bottom App Nav: Göz Alıcı ve Fonksiyonel */}
+                    <div className="fixed bottom-0 left-0 right-0 bottom-nav-v4 flex justify-around items-center z-50 px-10 py-10 shadow-[0_-30px_60px_rgba(0,0,0,0.25)]">
+                        <button onClick={() => { setActiveTab('liste'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-4 transition-all ${activeTab === 'liste' ? 'text-blue-600 scale-110' : 'text-slate-400'}`}>
+                            <div className={`p-8 rounded-[3rem] transition-all ${activeTab === 'liste' ? 'bg-blue-100 shadow-inner border-4 border-blue-200' : ''}`}>
+                                <SvgIcon name="grid" size={54} />
                             </div>
-                            <span className="text-xs font-black uppercase tracking-[0.2em]">BÖLGELER</span>
+                            <span className="text-lg font-black uppercase tracking-[0.2em]">LİSTE</span>
                         </button>
                         
-                        <button onClick={() => setIsAddModalOpen(true)} className="bg-slate-900 text-white p-8 rounded-[3rem] -mt-24 border-[16px] border-[#f1f5f9] shadow-2xl active:scale-90 active:rotate-180 transition-all duration-500">
-                            <SvgIcon name="plus" size={48} />
+                        <button onClick={() => setIsAddModalOpen(true)} className="bg-slate-900 text-white p-10 rounded-[3.5rem] -mt-36 border-[16px] border-[#f1f5f9] shadow-2xl active:scale-90 active:rotate-180 transition-all duration-500">
+                            <SvgIcon name="plus" size={64} />
                         </button>
 
-                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-3 transition-all ${activeTab === 'ozet' ? 'text-blue-600 scale-110' : 'text-slate-400'}`}>
-                            <div className={`p-6 rounded-[2.5rem] transition-all ${activeTab === 'ozet' ? 'bg-blue-100 shadow-inner border-2 border-blue-200' : ''}`}>
-                                <SvgIcon name="chart" size={42} />
+                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-4 transition-all ${activeTab === 'ozet' ? 'text-blue-600 scale-110' : 'text-slate-400'}`}>
+                            <div className={`p-8 rounded-[3rem] transition-all ${activeTab === 'ozet' ? 'bg-blue-100 shadow-inner border-4 border-blue-200' : ''}`}>
+                                <SvgIcon name="chart" size={54} />
                             </div>
-                            <span className="text-xs font-black uppercase tracking-[0.2em]">RAPOR</span>
+                            <span className="text-lg font-black uppercase tracking-[0.2em]">ÖZET</span>
                         </button>
                     </div>
                 </div>
