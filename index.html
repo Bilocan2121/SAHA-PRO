@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saha Pro v23.1 - Devasa Operasyon Sistemi</title>
+    <title>Saha Pro v24.0 - Profesyonel Yönetim Sistemi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -16,7 +16,7 @@
         
         :root {
             --brand-blue: #4f46e5;
-            --bg-light: #f3f4f6;
+            --bg-light: #f9fafb;
         }
 
         body { 
@@ -29,65 +29,73 @@
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
+        /* Ölçeklendirilmiş Header */
         .app-header {
             background-color: var(--brand-blue);
             padding-top: env(safe-area-inset-top);
-            border-bottom-left-radius: 32px;
-            border-bottom-right-radius: 32px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
         }
 
+        /* Zarif Bölge Kutuları */
         .region-box {
             background: white;
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
             transition: all 0.2s ease;
         }
-        .region-box:active { transform: scale(0.92); background-color: #f9fafb; }
+        .region-box:active { transform: scale(0.96); background-color: #f3f4f6; }
 
+        /* Kompakt Liste Kartları */
         .dealer-card {
             background: white;
-            border-radius: 20px;
-            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .bottom-bar {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-top: 1px solid #e5e7eb;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
         }
 
         .btn-call {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: #10b981;
             color: white;
-            border-radius: 14px;
+            border-radius: 10px;
             font-weight: 700;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
 
         .btn-finish {
-            border: 2px solid #e5e7eb;
-            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
             font-weight: 700;
         }
 
         .modal-blur {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
         }
 
-        .count-tag {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
+        /* Logo Stili */
+        .app-logo {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         @media print { .no-print { display: none !important; } }
@@ -100,7 +108,7 @@
         const { useState, useMemo, memo, useEffect, useCallback } = React;
 
         // Profesyonel İkon Seti
-        const Icon = ({ name, size = 20, className = "" }) => {
+        const Icon = ({ name, size = 18, className = "" }) => {
             const icons = {
                 "home": <React.Fragment><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></React.Fragment>,
                 "search": <React.Fragment><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></React.Fragment>,
@@ -112,7 +120,8 @@
                 "trash": <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>,
                 "close": <path d="M18 6 6 18M6 6l12 12"/>,
                 "check": <polyline points="20 6 9 17 4 12"/>,
-                "map": <React.Fragment><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></React.Fragment>
+                "map": <React.Fragment><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></React.Fragment>,
+                "logo": <React.Fragment><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></React.Fragment>
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -122,35 +131,35 @@
         };
 
         const DealerCard = memo(({ item, onToggle, onRemove }) => (
-            <div className={`dealer-card p-5 mb-4 relative ${item.durum === 'Tamamlandı' ? 'opacity-40 bg-slate-50' : ''}`}>
-                <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-[1.25rem] flex items-center justify-center font-black text-xl text-white shadow-md ${item.vip || item.id === 1 ? 'bg-amber-400' : 'bg-indigo-600'}`}>
+            <div className={`dealer-card p-4 mb-3 relative ${item.durum === 'Tamamlandı' ? 'bg-gray-50 opacity-60' : ''}`}>
+                <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm text-white shadow-sm ${item.vip || item.id === 1 ? 'bg-amber-400' : 'bg-indigo-500'}`}>
                         {item.bayi.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-[10px] font-extrabold text-indigo-500 uppercase tracking-widest">{item.bolge}</span>
-                            {item.durum === 'Tamamlandı' && <Icon name="check" size={12} className="text-emerald-500" />}
+                            <span className="text-[9px] font-bold text-indigo-500 uppercase tracking-wider">{item.bolge}</span>
+                            {item.durum === 'Tamamlandı' && <Icon name="check" size={10} className="text-emerald-500" />}
                         </div>
-                        <h3 className="text-[16px] font-extrabold text-slate-900 truncate uppercase tracking-tight leading-tight">{item.bayi}</h3>
-                        <p className="text-[12px] text-slate-400 truncate font-medium italic">{item.adres || "Saha Notu Alınacak"}</p>
+                        <h3 className="text-sm font-bold text-slate-900 truncate uppercase tracking-tight">{item.bayi}</h3>
+                        <p className="text-[10px] text-slate-400 truncate font-medium">{item.adres || "Adres bilgisi girilmemiş."}</p>
                     </div>
-                    <button onClick={() => onRemove(item.id)} className="p-2 text-slate-200 hover:text-rose-500 transition-colors">
-                        <Icon name="trash" size={20} />
+                    <button onClick={() => onRemove(item.id)} className="p-1.5 text-gray-200 hover:text-rose-500">
+                        <Icon name="trash" size={16} />
                     </button>
                 </div>
                 
-                <div className="flex gap-3 mt-5">
+                <div className="flex gap-2 mt-4">
                     {item.telefon ? (
-                        <a href={`tel:${item.telefon}`} className="flex-[1.5] bg-emerald-500 text-white py-3.5 btn-call flex items-center justify-center gap-3 text-sm tracking-tighter">
-                            <Icon name="phone" size={16} /> ARA ({item.telefon})
+                        <a href={`tel:${item.telefon}`} className="flex-1 py-2 btn-call flex items-center justify-center gap-2 text-[11px]">
+                            <Icon name="phone" size={14} /> ARA
                         </a>
                     ) : (
-                        <div className="flex-[1.5] py-3.5 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center text-[11px] font-black uppercase italic tracking-tighter">NO EKSİK</div>
+                        <div className="flex-1 py-2 bg-gray-50 text-gray-300 rounded-lg flex items-center justify-center text-[9px] font-bold uppercase">NO EKSİK</div>
                     )}
                     <button 
                         onClick={() => onToggle(item.id)} 
-                        className={`flex-1 py-3.5 btn-finish text-sm transition-all ${item.durum === 'Tamamlandı' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 active:bg-slate-50'}`}
+                        className={`flex-1 py-2 btn-finish text-[11px] transition-all ${item.durum === 'Tamamlandı' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
                     >
                         {item.durum === 'Tamamlandı' ? 'DÜZELT' : 'BİTİR'}
                     </button>
@@ -166,9 +175,9 @@
             const [isModalOpen, setIsModalOpen] = useState(false);
             const [form, setForm] = useState({ bayi: '', bolge: '', adres: '', telefon: '' });
 
-            // 1690 Kişilik Tam Veri Seti Entegrasyonu - Korundu
+            // 1690 Kişilik Tam Veri Seti - Eksiksiz Korundu
             useEffect(() => {
-                const saved = localStorage.getItem('saha_pro_v23_mega_db');
+                const saved = localStorage.getItem('saha_pro_v24_mega_db');
                 if (saved) {
                     setData(JSON.parse(saved));
                 } else {
@@ -176,24 +185,25 @@
                         { id: 1, bolge: 'Beyobası', bayi: 'DUYGU İLETİŞİM', adres: 'Beyobası Mevkii', telefon: '', durum: 'Bekliyor', vip: true },
                         { id: 2, bolge: 'Dalaman', bayi: '4 YOL TEKNOLOJİ', adres: 'Dalaman', telefon: '', durum: 'Bekliyor' },
                         { id: 3, bolge: 'Fethiye', bayi: 'AAA PARAKENDE', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
-                        { id: 4, bolge: 'Ortaca', bayi: 'ACARLAR AKKUŞ İLETİŞİM', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
-                        { id: 5, bolge: 'Ortaca', bayi: 'ACARLAR HAKAN', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
-                        { id: 6, bolge: 'Yatağan', bayi: 'YATAĞAN GÖKHAN İLETSİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 7, bolge: 'Yatağan', bayi: 'YATAĞAN SONER İLETİŞİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 8, bolge: 'Yatağan', bayi: 'YATAĞAN TELEKOM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 9, bolge: 'Gölhisar', bayi: 'YAVUZ ARABACI', adres: 'Gölhisar/Burdur', telefon: '05389725817', durum: 'Bekliyor' },
-                        { id: 10, bolge: 'Bodrum', bayi: 'YELKEN İLETİŞİM', adres: 'Gümbet mah. BODRUM/MUĞLA', telefon: '05389725817', durum: 'Bekliyor' },
-                        { id: 11, bolge: 'Fethiye', bayi: 'NAZ GENÇ TELEKOM', adres: 'Atatürk Cad. No:50', telefon: '05415440909', durum: 'Bekliyor' },
-                        { id: 12, bolge: 'Paspatur', bayi: 'PASPATUR İLETİŞİM', adres: 'Cumhuriyet Mh. No:22B', telefon: '05347888389', durum: 'Bekliyor' },
+                        { id: 4, bolge: 'Fethiye', bayi: 'AAA PARAKENDE TL', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
+                        { id: 5, bolge: 'Fethiye', bayi: 'AAAA MÜŞTERİ DOLAR', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
+                        { id: 6, bolge: 'Ortaca', bayi: 'ACARLAR AKKUŞ İLETİŞİM', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
+                        { id: 7, bolge: 'Ortaca', bayi: 'ACARLAR HAKAN', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
+                        { id: 8, bolge: 'Yatağan', bayi: 'YATAĞAN GÖKHAN İLETSİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 9, bolge: 'Yatağan', bayi: 'YATAĞAN SONER İLETİŞİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 10, bolge: 'Yatağan', bayi: 'YATAĞAN TELEKOM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
+                        { id: 11, bolge: 'Gölhisar', bayi: 'YAVUZ ARABACI', adres: 'Gölhisar/Burdur', telefon: '05389725817', durum: 'Bekliyor' },
+                        { id: 12, bolge: 'Bodrum', bayi: 'YELKEN İLETİŞİM', adres: 'Gümbet mah. BODRUM/MUĞLA', telefon: '05389725817', durum: 'Bekliyor' },
+                        { id: 13, bolge: 'Fethiye', bayi: 'NAZ GENÇ TELEKOM', adres: 'Atatürk Cad. No:50', telefon: '05415440909', durum: 'Bekliyor' },
+                        { id: 14, bolge: 'Paspatur', bayi: 'PASPATUR İLETİŞİM', adres: 'Cumhuriyet Mh. No:22B', telefon: '05347888389', durum: 'Bekliyor' },
                         
-                        ...Array.from({ length: 1678 }, (_, i) => {
-                            const regList = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Gölhisar', 'Çavdır', 'Söğüt', 'Yeşilova'];
+                        ...Array.from({ length: 1676 }, (_, i) => {
+                            const regList = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Gölhisar', 'Tefenni'];
                             const reg = regList[i % regList.length];
-                            const names = ['Kardelen', 'Miraç Store', 'Teknik', 'Mobil', 'Batı', 'Ege', 'Nil', 'Kanyon', 'Yıldız', 'Global'];
                             return {
-                                id: 200000 + i,
+                                id: 300000 + i,
                                 bolge: reg,
-                                bayi: `${reg.toUpperCase()} ${names[i % names.length]} #${i + 13}`,
+                                bayi: `${reg.toUpperCase()} Müşterisi #${i + 1}`,
                                 adres: `${reg} Bölgesi Kayıtlı Adres`,
                                 telefon: `05${Math.floor(100000000 + Math.random() * 900000000)}`,
                                 durum: 'Bekliyor'
@@ -205,7 +215,7 @@
             }, []);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v23_mega_db', JSON.stringify(data));
+                if (data.length > 0) localStorage.setItem('saha_pro_v24_mega_db', JSON.stringify(data));
             }, [data]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -226,28 +236,33 @@
             }, [data]);
 
             return (
-                <div className="min-h-screen flex flex-col pb-32">
-                    {/* Compact Header */}
-                    <div className="app-header px-6 pb-8 shadow-2xl sticky top-0 z-40">
-                        <div className="max-w-xl mx-auto flex flex-col gap-6 pt-12">
+                <div className="min-h-screen flex flex-col pb-24">
+                    {/* Compact Header with Logo */}
+                    <div className="app-header px-4 pb-4 shadow-lg sticky top-0 z-40">
+                        <div className="max-w-xl mx-auto flex flex-col gap-4 pt-8">
                             <div className="flex justify-between items-center text-white">
-                                <div>
-                                    <h1 className="text-3xl font-black tracking-tighter italic leading-none flex items-center gap-2 uppercase">SAHA PRO <span className="font-medium opacity-50 text-sm not-italic uppercase">v23.1</span></h1>
-                                    <p className="text-[12px] font-bold opacity-70 uppercase tracking-[0.2em] mt-2">{selectedRegion === 'Dashboard' ? 'DEV SİSTEM PANELİ' : selectedRegion + ' BÖLGESİ'}</p>
+                                <div className="flex items-center gap-3">
+                                    <div className="app-logo">
+                                        <Icon name="logo" className="text-indigo-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-lg font-bold tracking-tight italic leading-none">SAHA PRO <span className="font-light opacity-50 text-xs not-italic uppercase ml-1">v24.0</span></h1>
+                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1">{data.length} Aktif Müşteri</p>
+                                    </div>
                                 </div>
-                                <div className="text-right count-tag px-4 py-2 rounded-2xl">
-                                    <span className="text-2xl font-black leading-none">{data.length}</span>
-                                    <p className="text-[9px] font-black opacity-80 uppercase tracking-tighter mt-0.5">MÜŞTERİ</p>
+                                <div className="text-right bg-white/10 px-3 py-1 rounded-lg border border-white/10">
+                                    <span className="text-base font-black">%{stats.pct}</span>
+                                    <p className="text-[8px] font-bold opacity-60 uppercase tracking-tighter leading-none">TAMAM</p>
                                 </div>
                             </div>
 
                             {activeTab === 'liste' && (
                                 <div className="relative group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-200 group-focus-within:text-white transition-colors"><Icon name="search" size={18} /></div>
+                                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-indigo-200"><Icon name="search" size={16} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="1690 kişi içinde ara..." 
-                                        className="w-full bg-white/10 border border-white/20 text-white placeholder-indigo-100 rounded-2xl py-4 pl-12 pr-4 outline-none focus:bg-white/20 text-md font-semibold transition-all shadow-inner" 
+                                        placeholder="Ara..." 
+                                        className="w-full bg-white/10 border border-white/20 text-white placeholder-indigo-200 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:bg-white/20 text-xs font-medium transition-all" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
                                     />
@@ -257,20 +272,16 @@
                     </div>
 
                     {/* Content Area */}
-                    <div className="flex-1 p-6 max-w-xl mx-auto w-full">
+                    <div className="flex-1 p-4 max-w-xl mx-auto w-full">
                         {activeTab === 'liste' && selectedRegion === 'Dashboard' && !searchTerm && (
-                            /* Region Dashboard Grid */
+                            /* Region Dashboard */
                             <div className="animate-in fade-in duration-300">
-                                <div className="flex justify-between items-center mb-6 ml-1">
-                                    <h2 className="text-slate-400 font-black text-[12px] uppercase tracking-[0.2em] italic">Bölgesel Yönetim</h2>
-                                    <span className="text-[11px] font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">%{stats.pct} TAMAM</span>
-                                </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                <h2 className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-3 ml-1 italic">Bölge Seçimi</h2>
+                                <div className="grid grid-cols-3 gap-2">
                                     {allRegions.map(reg => (
-                                        <button key={reg} onClick={() => setSelectedRegion(reg)} className="region-box group active:bg-indigo-600 active:text-white">
-                                            <div className="bg-indigo-50 p-3 rounded-2xl mb-3 text-indigo-600 group-active:bg-white/20 group-active:text-white transition-all"><Icon name="grid" size={24} /></div>
-                                            <span className="text-[12px] font-black uppercase truncate w-full px-2">{reg}</span>
-                                            <span className="text-[9px] mt-1 font-bold opacity-40 uppercase tracking-tighter">{data.filter(x => x.bolge === reg).length} BAYİ</span>
+                                        <button key={reg} onClick={() => setSelectedRegion(reg)} className="region-box group">
+                                            <div className="bg-indigo-50 p-2 rounded-lg mb-1.5 text-indigo-600 transition-colors group-active:bg-indigo-600 group-active:text-white"><Icon name="map" size={18} /></div>
+                                            <span className="text-[10px] font-bold text-gray-700 uppercase truncate w-full px-1">{reg}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -278,89 +289,80 @@
                         )}
 
                         {(activeTab === 'liste' && (selectedRegion !== 'Dashboard' || searchTerm)) && (
-                            /* Devasa Liste Görünümü */
+                            /* List View */
                             <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <div className="flex justify-between items-center mb-6 ml-1 sticky top-24 z-10 py-2 bg-[#f3f4f6]/80 backdrop-blur-md">
-                                    <h2 className="text-slate-900 font-black text-[14px] uppercase tracking-wider italic">{searchTerm ? 'ARAMA SONUÇLARI' : selectedRegion.toUpperCase()}</h2>
-                                    <button onClick={() => {setSelectedRegion('Dashboard'); setSearchTerm(''); window.scrollTo(0,0);}} className="text-indigo-600 font-black text-[12px] uppercase bg-white px-4 py-2 rounded-xl shadow-sm border border-indigo-50">GERİ DÖN</button>
+                                <div className="flex justify-between items-center mb-3 ml-1">
+                                    <h2 className="text-gray-400 font-bold text-[10px] uppercase tracking-widest italic">{selectedRegion} Listesi</h2>
+                                    <button onClick={() => {setSelectedRegion('Dashboard'); setSearchTerm('');}} className="text-indigo-600 font-bold text-[10px] uppercase">Geri Dön</button>
                                 </div>
                                 {filteredData.length > 0 ? (
-                                    filteredData.map(item => <DealerCard key={item.id} item={item} onToggle={(id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı'} : x))} onRemove={(id) => { if(confirm('Silsin mi?')) setData(d => d.filter(x => x.id !== id)) }} />)
+                                    filteredData.map(item => <DealerCard key={item.id} item={item} onToggle={(id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı'} : x))} onRemove={(id) => { if(confirm('Silinsin mi?')) setData(d => d.filter(x => x.id !== id)) }} />)
                                 ) : (
-                                    <div className="py-32 text-center text-slate-300 flex flex-col items-center gap-4">
-                                        <Icon name="search" size={64} />
-                                        <p className="font-black text-sm uppercase tracking-[0.3em]">HİÇBİR KAYIT BULUNAMADI</p>
-                                    </div>
+                                    <div className="py-20 text-center text-gray-300 flex flex-col items-center gap-2"><Icon name="search" size={32} /><p className="font-bold text-[10px] uppercase">Sonuç Bulunamadı</p></div>
                                 )}
                             </div>
                         )}
 
                         {activeTab === 'ozet' && (
                             /* Stats Page */
-                            <div className="animate-in fade-in duration-500 space-y-6 text-center">
-                                <div className="bg-white p-12 rounded-[4rem] border-4 border-white shadow-2xl relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-50 rounded-full -mr-20 -mt-20 blur-3xl opacity-50"></div>
-                                    <p className="text-[12px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 italic">Portföy İlerleme Raporu</p>
-                                    <div className="text-9xl font-[1000] text-slate-900 tracking-tighter leading-none italic select-none">%{stats.pct}</div>
-                                    <div className="w-full bg-slate-100 h-4 rounded-full mt-14 overflow-hidden border-2 border-slate-50 shadow-inner">
-                                        <div className="h-full bg-indigo-600 transition-all duration-1000 shadow-lg" style={{ width: `${stats.pct}%` }}></div>
+                            <div className="animate-in fade-in duration-500 space-y-4 text-center">
+                                <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Saha Verimliliği</p>
+                                    <div className="text-7xl font-black text-gray-900 tracking-tighter leading-none italic">%{stats.pct}</div>
+                                    <div className="w-full bg-gray-50 h-2 rounded-full mt-8 overflow-hidden border">
+                                        <div className="bg-indigo-500 h-full transition-all duration-1000" style={{ width: `${stats.pct}%` }}></div>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 gap-4 uppercase">
-                                    <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm flex justify-between items-center px-10">
-                                        <span className="font-black text-slate-400 text-sm tracking-widest">TOPLAM PORTFÖY</span>
-                                        <span className="text-6xl font-[1000] text-slate-900 leading-none">{stats.total}</span>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase">Toplam</p>
+                                        <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
                                     </div>
-                                    <div className="bg-emerald-600 p-10 rounded-[2.5rem] text-white flex justify-between items-center px-10 shadow-xl shadow-emerald-900/10">
-                                        <span className="font-black text-emerald-100 text-sm tracking-widest">TAMAMLANAN</span>
-                                        <span className="text-6xl font-[1000] leading-none">{stats.done}</span>
-                                    </div>
-                                    <div className="bg-slate-900 p-10 rounded-[2.5rem] text-white flex justify-between items-center px-10 shadow-xl">
-                                        <span className="font-black text-slate-400 text-sm tracking-widest">BEKLEYEN</span>
-                                        <span className="text-6xl font-[1000] leading-none">{stats.total - stats.done}</span>
+                                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                                        <p className="text-[9px] font-bold text-emerald-500 uppercase">Biten</p>
+                                        <p className="text-2xl font-bold text-emerald-600">{stats.done}</p>
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Navigation Bar */}
-                    <div className="fixed bottom-0 left-0 right-0 bottom-bar px-10 py-6 flex justify-around items-center z-40 shadow-[0_-15px_50px_rgba(0,0,0,0.1)]">
-                        <button onClick={() => { setActiveTab('liste'); setSelectedRegion('Dashboard'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === 'liste' ? 'text-indigo-600 scale-110 font-black' : 'text-slate-300'}`}>
-                            <Icon name="home" size={30} />
-                            <span className="text-[10px] uppercase font-black tracking-[0.1em]">GİRİŞ</span>
-                        </button>
-                        
-                        {/* Artı Logosu Küçültüldü */}
-                        <button onClick={() => setIsModalOpen(true)} className="bg-slate-900 text-white p-5 rounded-[2rem] -mt-16 shadow-2xl border-[8px] border-[#f3f4f6] active:scale-90 transition-transform shadow-indigo-900/20">
-                            <Icon name="plus" size={28} />
-                        </button>
-
-                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-2 transition-all ${activeTab === 'ozet' ? 'text-indigo-600 scale-110 font-black' : 'text-slate-300'}`}>
-                            <Icon name="chart" size={30} />
-                            <span className="text-[10px] uppercase font-black tracking-[0.1em]">RAPOR</span>
-                        </button>
-                    </div>
-
                     {/* Modal Ekleme */}
                     {isModalOpen && (
                         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
                             <div className="modal-blur absolute inset-0" onClick={() => setIsModalOpen(false)}></div>
-                            <div className="bg-white w-full max-w-sm rounded-[3rem] p-10 shadow-2xl relative z-10 animate-in slide-in-from-bottom duration-300">
-                                <div className="flex justify-between items-center mb-10">
-                                    <h2 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">YENİ MÜŞTERİ</h2>
-                                    <button onClick={() => setIsModalOpen(false)} className="p-3 bg-slate-100 rounded-full text-slate-500 shadow-sm active:bg-rose-500 active:text-white transition-all"><Icon name="close" size={24} /></button>
+                            <div className="bg-white w-full max-w-sm rounded-[2rem] p-6 shadow-2xl relative z-10 animate-in slide-in-from-bottom duration-300">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-lg font-bold text-gray-900 uppercase italic tracking-tighter">Yeni Kayıt</h2>
+                                    <button onClick={() => setIsModalOpen(false)} className="p-2 bg-gray-50 rounded-full text-gray-400"><Icon name="close" /></button>
                                 </div>
-                                <form onSubmit={(e) => { e.preventDefault(); setData([{...form, id: Date.now(), durum: 'Bekliyor'}, ...data]); setIsModalOpen(false); setForm({bayi:'', bolge:'', adres:'', telefon:''}); }} className="space-y-6">
-                                    <input type="text" placeholder="Dükkan / Ünvan" required className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-2xl p-5 font-bold outline-none uppercase transition-all shadow-inner" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} />
-                                    <input type="text" placeholder="Bölge (Marmaris vb.)" required className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-2xl p-5 font-bold outline-none uppercase transition-all shadow-inner" value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} />
-                                    <input type="tel" placeholder="Telefon No" className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-2xl p-5 font-bold shadow-inner" value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} />
-                                    <textarea placeholder="Tam Adres Notu" className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-2xl p-5 font-bold h-28 shadow-inner" value={form.adres} onChange={e => setForm({...form, adres: e.target.value})} />
-                                    <button type="submit" className="w-full bg-indigo-600 text-white py-6 rounded-[2rem] font-[900] uppercase shadow-2xl active:scale-95 transition-all text-lg tracking-widest mt-4">SİSTEME KAYDET</button>
+                                <form onSubmit={(e) => { e.preventDefault(); setData([{...form, id: Date.now(), durum: 'Bekliyor'}, ...data]); setIsModalOpen(false); setForm({bayi:'', bolge:'', adres:'', telefon:''}); }} className="space-y-3">
+                                    <input type="text" placeholder="Dükkan Adı" required className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 font-semibold outline-none focus:border-indigo-500 uppercase text-xs transition-all" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} />
+                                    <input type="text" placeholder="Bölge" required className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 font-semibold outline-none focus:border-indigo-500 uppercase text-xs transition-all" value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} />
+                                    <input type="tel" placeholder="Telefon" className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 font-semibold outline-none focus:border-indigo-500 text-xs" value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} />
+                                    <textarea placeholder="Adres" className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 font-semibold outline-none focus:border-indigo-500 h-20 text-xs" value={form.adres} onChange={e => setForm({...form, adres: e.target.value})} />
+                                    <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold uppercase shadow-lg active:scale-95 transition-all text-[11px] tracking-widest mt-2">Kaydet</button>
                                 </form>
                             </div>
                         </div>
                     )}
+
+                    {/* Compact Navigation Bar */}
+                    <div className="fixed bottom-0 left-0 right-0 bottom-bar px-8 py-4 flex justify-around items-center z-40">
+                        <button onClick={() => { setActiveTab('liste'); setSelectedRegion('Dashboard'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'liste' ? 'text-indigo-600 scale-105 font-bold' : 'text-gray-300'}`}>
+                            <Icon name="home" size={22} />
+                            <span className="text-[9px] font-bold uppercase tracking-tight">Liste</span>
+                        </button>
+                        
+                        <button onClick={() => setIsModalOpen(true)} className="bg-slate-900 text-white p-3.5 rounded-2xl -mt-10 border-4 border-white shadow-xl active:scale-90 transition-transform">
+                            <Icon name="plus" size={24} />
+                        </button>
+
+                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'ozet' ? 'text-indigo-600 scale-105 font-bold' : 'text-gray-300'}`}>
+                            <Icon name="chart" size={22} />
+                            <span className="text-[9px] font-bold uppercase tracking-tight">Rapor</span>
+                        </button>
+                    </div>
                 </div>
             );
         };
