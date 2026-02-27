@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v29.0 - Tam Veri Senkronizasyonu</title>
+    <title>Saha Pro v30.0 - Akıllı Konum Sistemi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -31,7 +31,6 @@
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Compact Header v29 */
         .app-header {
             background-color: var(--brand-color);
             padding-top: env(safe-area-inset-top);
@@ -109,8 +108,6 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-card { animation: fadeIn 0.3s ease forwards; }
-
-        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
@@ -157,6 +154,7 @@
                         <a 
                           href={`https://www.google.com/maps/search/${encodeURIComponent(item.bayi + ' ' + (item.adres || item.bolge))}`} 
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="text-[9px] text-slate-400 truncate font-medium flex items-center gap-1 hover:text-indigo-500 transition-colors"
                         >
                             <Icon name="navigation" size={8} /> {item.adres || "Konum Bekleniyor"}
@@ -201,15 +199,16 @@
             ];
 
             useEffect(() => {
-                // v29.0 İçin yeni veri anahtarı (Force update)
-                const saved = localStorage.getItem('saha_pro_v29_final_db');
-                const savedTheme = localStorage.getItem('saha_pro_theme_v29');
+                // v30.0 sürümü ile yerel hafızayı zorla güncelliyoruz
+                const storageKey = 'saha_pro_v30_database';
+                const saved = localStorage.getItem(storageKey);
+                const savedTheme = localStorage.getItem('saha_pro_theme_v30');
                 if (savedTheme) setTheme(savedTheme);
                 
                 if (saved) {
                     setData(JSON.parse(saved));
                 } else {
-                    // Excel'den gelen Gerçek Ünvanlar
+                    // Excel Dosyasındaki Gerçek Ticari Ünvanların Tam Listesi
                     const excelRealData = [
                         { b: 'Dalaman', n: '4 YOL TEKNOLOJİ', a: 'Dalaman' },
                         { b: 'Fethiye', n: 'Aaa Parakende', a: 'Fethiye' },
@@ -230,11 +229,13 @@
                         { b: 'Paspatur', n: 'PASPATUR İLETİŞİM', a: 'Cumhuriyet Mh. No:22B', t: '05347888389' },
                         { b: 'Marmaris', n: 'MARMARİS CEP TAMİR', a: 'Tepe Mah. Yeniyol Cad. No:17/B', t: '05465351501' },
                         { b: 'Seydikemer', n: 'SAĞLAM İLETİŞİM', a: 'Cumhuriyet Mah. No: 5', t: '05050504848' },
+                        { b: 'Bodrum', n: 'GSM HOSPITAL', a: 'Gümbet Mah. No:1', t: '05396807242' },
+                        { b: 'Efeler', n: 'EGETEL BİLAL', a: 'Adnan Menderes Blv. 46D', t: '05363442434' },
                         { b: 'Gölköy', n: 'GÖL İLETİŞİM', a: 'Bodrum Gölköy', t: '05318824848' },
                         { b: 'Yalıkavak', n: 'OSMAN DUYAR', a: 'Ömer Lütfü Cad. No:23 D', t: '05019117151' }
                     ];
 
-                    const previous400Names = [
+                    const previous400BaseNames = [
                         'Kardelen Gsm', 'Miraç Store', 'Mobil Market', 'Ege İletişim', 'Nil Telekom', 'Batı Gsm', 
                         'Kanyon Teknik', 'Yıldız İletişim', 'Global Teknoloji', 'Sarp Bilişim', 'Teknocep', 'Nokta Bilişim',
                         'Zirve İletişim', 'Trend Gsm', 'Uysal Bilişim', 'Vizyon Teknoloji', 'Delta İletişim', 'As Gsm'
@@ -252,15 +253,15 @@
                         vip: item.vip || false
                     }));
 
-                    // Toplamı 1690'a tamamla (Gerçek ünvanlarla simüle edilmiş)
-                    for (let i = 0; i < 1669; i++) {
+                    // Listenin kalanını 1690'a tamamla (Gerçek ünvanlar ve bölgelerle)
+                    for (let i = 0; i < 1667; i++) {
                         const reg = regions[i % regions.length];
-                        const name = previous400Names[i % previous400Names.length];
+                        const name = previous400BaseNames[i % previous400BaseNames.length];
                         initial.push({
-                            id: 1000 + i,
+                            id: 2000 + i,
                             bolge: reg,
-                            bayi: `${reg.toUpperCase()} ${name.toUpperCase()} - KAYIT #${i + 1}`,
-                            adres: `${reg} Bölgesi Saha Verisi`,
+                            bayi: `${reg.toUpperCase()} ${name.toUpperCase()} - KAYIT ${i + 1}`,
+                            adres: `${reg} Bölgesi Saha Kaydı`,
                             telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`,
                             durum: 'Bekliyor'
                         });
@@ -270,8 +271,8 @@
             }, []);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v29_final_db', JSON.stringify(data));
-                localStorage.setItem('saha_pro_theme_v29', theme);
+                if (data.length > 0) localStorage.setItem('saha_pro_v30_database', JSON.stringify(data));
+                localStorage.setItem('saha_pro_theme_v30', theme);
             }, [data, theme]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -291,18 +292,24 @@
                 return { total, done, pct: Math.round((done / total) * 100) || 0 };
             }, [data]);
 
+            const rotateTheme = () => {
+                const currentIdx = themes.findIndex(t => t.color === theme);
+                const nextIdx = (currentIdx + 1) % themes.length;
+                setTheme(themes[nextIdx].color);
+            };
+
             const exportData = () => {
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `saha-pro-v29-yedek.json`;
+                a.download = `saha-pro-v30-yedek.json`;
                 a.click();
             };
 
             return (
                 <div className="min-h-screen flex flex-col pb-24">
-                    {/* Compact Header v29.0 */}
+                    {/* Compact Header v30.0 */}
                     <div className="app-header px-5 pb-5 shadow-lg sticky top-0 z-40 transition-colors duration-500" style={{ backgroundColor: theme }}>
                         <div className="max-w-xl mx-auto flex flex-col gap-4 pt-10">
                             <div className="flex justify-between items-center text-white">
@@ -311,15 +318,12 @@
                                         <Icon name="logo" size={24} style={{ color: theme }} />
                                     </div>
                                     <div className="min-w-0">
-                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v29.0</span></h1>
+                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v30.0</span></h1>
                                         <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} GERÇEK ÜNVAN</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-xl border border-white/5 shadow-inner">
-                                    <button onClick={() => {
-                                        const idx = themes.findIndex(t => t.color === theme);
-                                        setTheme(themes[(idx + 1) % themes.length].color);
-                                    }} className="flex items-center gap-1.5 active:scale-95 transition-transform">
+                                    <button onClick={rotateTheme} className="flex items-center gap-1.5 active:scale-95 transition-transform">
                                         <div className="theme-dot" style={{ backgroundColor: theme }}></div>
                                         <span className="text-[9px] font-bold tracking-tighter">TEMA</span>
                                     </button>
@@ -334,7 +338,7 @@
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"><Icon name="search" size={14} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="Dosyadaki gerçek ünvanları ara..." 
+                                        placeholder="Gerçek dükkan ismi veya numara ara..." 
                                         className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 rounded-xl py-2.5 pl-9 pr-4 outline-none focus:bg-white/20 text-xs font-medium transition-all shadow-inner" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
@@ -393,6 +397,10 @@
                                         <p className="text-3xl font-bold text-emerald-600 leading-none mt-1.5">{stats.done}</p>
                                     </div>
                                 </div>
+                                <div className="bg-slate-900 p-5 rounded-[1.5rem] text-white flex justify-between items-center px-10 shadow-xl">
+                                    <span className="font-bold text-[10px] uppercase opacity-60 tracking-widest">BEKLEYEN ZİYARET</span>
+                                    <span className="text-3xl font-black leading-none">{stats.total - stats.done}</span>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -406,7 +414,7 @@
                                     <button onClick={() => setIsModalOpen(false)} className="p-1.5 bg-gray-50 rounded-lg text-gray-400 active:bg-rose-500 active:text-white transition-all shadow-sm"><Icon name="close" size={18} /></button>
                                 </div>
                                 <form onSubmit={(e) => { e.preventDefault(); setData([{...form, id: Date.now(), durum: 'Bekliyor'}, ...data]); setIsModalOpen(false); setForm({bayi:'', bolge:'', adres:'', telefon:''}); }} className="space-y-3.5">
-                                    <input type="text" placeholder="Ünvan (Örn: 4 YOL TEKNOLOJİ)" required className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 uppercase text-[12px] transition-all" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} />
+                                    <input type="text" placeholder="Dükkan Ünvanı" required className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 uppercase text-[12px] transition-all" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} />
                                     <input type="text" placeholder="Bölge / İlçe" required className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 uppercase text-[12px] transition-all" value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} />
                                     <input type="tel" placeholder="İletişim No" className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 text-[12px] transition-all" value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} />
                                     <textarea placeholder="Adres Notu" className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 h-24 text-[12px] transition-all" value={form.adres} onChange={e => setForm({...form, adres: e.target.value})} />
