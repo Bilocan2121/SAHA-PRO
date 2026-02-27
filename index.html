@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v54.0 - Kesin Çözüm</title>
+    <title>Saha Pro v55.0 - Stabil ve Tam Liste</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -18,10 +18,11 @@
         .app-header { background-color: var(--brand-color); padding-top: env(safe-area-inset-top); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; transition: background-color 0.4s ease; }
         .dealer-card { background: white; border-radius: 14px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.05); transition: all 0.2s ease; }
         /* Ultra Kompakt Alt Bar */
-        .bottom-bar { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-top: 1px solid #e5e7eb; padding-bottom: env(safe-area-inset-bottom, 4px); height: 54px; }
+        .bottom-bar { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-top: 1px solid #e5e7eb; padding-bottom: env(safe-area-inset-bottom, 4px); height: 50px; }
         .btn-action { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 6px; border-radius: 8px; font-size: 10px; font-weight: 800; transition: all 0.2s; }
         .app-logo { width: 30px; height: 30px; background: #ffffff; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .ai-glow { box-shadow: 0 0 15px rgba(79, 70, 229, 0.2); border: 1px solid rgba(79, 70, 229, 0.1); }
+        .modal-blur { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
     </style>
@@ -33,8 +34,12 @@
 
         const turkishNormalize = (str) => {
             if (!str) return "";
-            const map = { 'İ': 'i', 'I': 'ı', 'Ş': 'ş', 'Ğ': 'ğ', 'Ü': 'ü', 'Ö': 'ö', 'Ç': 'ç', 'i': 'i', 'ı': 'ı', 'ş': 'ş', 'ğ': 'ğ', 'ü': 'ü', 'ö': 'ö', 'ç': 'ç' };
-            return str.replace(/[İIŞĞÜÖÇ]/g, letter => map[letter]).toLowerCase();
+            return str
+                .replace(/İ/g, "i").replace(/I/g, "ı")
+                .replace(/Ş/g, "ş").replace(/Ğ/g, "ğ")
+                .replace(/Ü/g, "ü").replace(/Ö/g, "ö")
+                .replace(/Ç/g, "ç")
+                .toLowerCase();
         };
 
         const Icon = ({ name, size = 18, className = "" }) => {
@@ -54,7 +59,7 @@
                 "wallet": <Fragment><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></Fragment>,
                 "sparkles": <path d="m12 3 1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3Z"/>,
                 "refresh": <Fragment><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></Fragment>,
-                "close": <Fragment><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Fragment>
+                "close": <Fragment><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></Fragment>
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -63,7 +68,7 @@
             );
         };
 
-        const DealerCard = memo(({ item, onToggle, onRemove, onAddNote, onTogglePayment, theme }) => {
+        const DealerCard = memo(({ item, onToggle, onRemove, onOpenNote, onTogglePayment, theme }) => {
             const getCleanSearchName = (name) => name.split('#')[0].trim();
             const shareDetails = () => {
                 const text = `🏬 *SAHA PRO*\nBayi: ${item.bayi}\nDurum: ${item.durum}\nÖdeme: ${item.paymentStatus === 'paid' ? 'OK' : 'Bekliyor'}\n📍 Konum: https://www.google.com/maps/search/${encodeURIComponent(getCleanSearchName(item.bayi))}`;
@@ -80,16 +85,17 @@
                         </div>
                         <button onClick={() => onRemove(item.id)} className="p-1 text-slate-200 hover:text-rose-500"><Icon name="trash" size={14} /></button>
                     </div>
+                    {item.note && <div className="mb-3 bg-indigo-50 border-l-2 border-indigo-400 p-2 rounded-r-md text-[10px] italic text-slate-700 font-semibold leading-snug">"{item.note}"</div>}
                     <div className="grid grid-cols-2 gap-1.5 mb-1.5">
-                        <a href={`https://www.google.com/maps/search/${encodeURIComponent(getCleanSearchName(item.bayi))}`} target="_blank" className="btn-action bg-indigo-50 text-indigo-600 border border-indigo-100"><Icon name="navigation" size={12} /> KONUM</a>
-                        <button onClick={() => onTogglePayment(item.id)} className={`btn-action ${item.paymentStatus === 'paid' ? 'bg-emerald-500 text-white' : 'bg-slate-50 text-slate-400 border border-slate-200'}`}><Icon name="wallet" size={12} /> ÖDEME</button>
+                        <a href={`https://www.google.com/maps/search/${encodeURIComponent(getCleanSearchName(item.bayi))}`} target="_blank" className="btn-action bg-indigo-50 text-indigo-600 border border-indigo-100 active:scale-95"><Icon name="navigation" size={12} /> KONUM</a>
+                        <button onClick={() => onTogglePayment(item.id)} className={`btn-action active:scale-95 ${item.paymentStatus === 'paid' ? 'bg-emerald-500 text-white' : 'bg-slate-50 text-slate-400 border border-slate-200'}`}><Icon name="wallet" size={12} /> ÖDEME</button>
                     </div>
                     <div className="grid grid-cols-3 gap-1.5 mb-3">
-                        <button onClick={() => onAddNote(item.id)} className="btn-action bg-slate-50 text-slate-500 border border-slate-200">NOT</button>
-                        <button onClick={shareDetails} className="btn-action bg-emerald-50 text-emerald-600 border border-emerald-100">PAYLAŞ</button>
-                        {item.telefon ? <a href={`tel:${item.telefon}`} className="btn-action bg-emerald-500 text-white shadow-sm">ARA</a> : <div className="btn-action bg-slate-100 text-slate-300 italic text-[8px]">YOK</div>}
+                        <button onClick={() => onOpenNote(item.id)} className="btn-action bg-slate-50 text-slate-500 border border-slate-200 active:scale-95">NOT</button>
+                        <button onClick={shareDetails} className="btn-action bg-emerald-50 text-emerald-600 border border-emerald-100 active:scale-95">PAYLAŞ</button>
+                        {item.telefon ? <a href={`tel:${item.telefon}`} className="btn-action bg-emerald-500 text-white shadow-sm active:scale-95">ARA</a> : <div className="btn-action bg-slate-100 text-slate-300 italic text-[8px]">YOK</div>}
                     </div>
-                    <button onClick={() => onToggle(item.id)} className={`w-full py-2 rounded-lg font-black text-[11px] uppercase tracking-widest ${item.durum === 'Tamamlandı' ? 'bg-white text-slate-400 border border-slate-100' : 'bg-[#0F172A] text-white'}`}>
+                    <button onClick={() => onToggle(item.id)} className={`w-full py-2 rounded-lg font-black text-[11px] uppercase tracking-widest active:scale-95 ${item.durum === 'Tamamlandı' ? 'bg-white text-slate-400 border border-slate-200 shadow-sm' : 'bg-[#0F172A] text-white shadow-lg'}`}>
                         {item.durum === 'Tamamlandı' ? 'DÜZELT' : 'BİTİR'}
                     </button>
                 </div>
@@ -102,6 +108,7 @@
             const [selectedRegion, setSelectedRegion] = useState('Dashboard');
             const [activeTab, setActiveTab] = useState('liste');
             const [isModalOpen, setIsModalOpen] = useState(false);
+            const [noteModal, setNoteModal] = useState({ open: false, id: null, text: '' });
             const [theme, setTheme] = useState('#4f46e5');
             const [aiResult, setAiResult] = useState(null);
             const [isAiLoading, setIsAiLoading] = useState(false);
@@ -110,20 +117,28 @@
             const apiKey = ""; 
 
             const loadInitialData = useCallback(() => {
-                const excelList = [{ b: 'Dalaman', n: '4 YOL TEKNOLOJİ' }, { b: 'Fethiye', n: 'Aaa Parakende' }, { b: 'Ortaca', n: 'ACARLAR HAKAN' }, { b: 'Yatağan', n: 'Yatağan gökan iletsim' }, { b: 'Gölhisar', n: 'Yavuz arabacı', t: '5389725817' }, { b: 'Bodrum', n: 'YELKEN İLETİŞİM', t: '05389725817' }, { b: 'Efeler', n: 'EGETEL BİLAL', t: '05363442434' }, { b: 'Acıpayam', n: 'ACIPAYAM YILDIZ İLETİŞİM' }];
+                const excelList = [
+                    { b: 'Dalaman', n: '4 YOL TEKNOLOJİ' }, { b: 'Fethiye', n: 'Aaa Parakende' }, { b: 'Fethiye', n: 'Aaa parakende TL' }, { b: 'Fethiye', n: 'Aaaa Müşteri dolar' },
+                    { b: 'Ortaca', n: 'Acarlar Akkuş İletişim' }, { b: 'Ortaca', n: 'Acarlar hakan' }, { b: 'Ortaca', n: 'ACARLAR HAKAN' },
+                    { b: 'Yatağan', n: 'Yatağan gökan iletsim' }, { b: 'Yatağan', n: 'Yatağan Soner iletişim' }, { b: 'Yatağan', n: 'Yatağan Telekom' }, { b: 'Yatağan', n: 'Yatağan yasemin' }, { b: 'Yatağan', n: 'Yatağan yiğit maksi', t: '5544585656' },
+                    { b: 'Gölhisar', n: 'Yavuz arabacı', t: '5389725817' }, { b: 'Bodrum', n: 'YELKEN İLETİŞİM', t: '05389725817' },
+                    { b: 'Efeler', n: 'EGETEL BİLAL', t: '05363442434' }, { b: 'Efeler', n: 'NİSA AYDIN İLETİŞİM', t: '05559914400' }, { b: 'Efeler', n: 'CANLAR İLETİŞİM', t: '05559914400' }, { b: 'Efeler', n: 'ZEYBEK CEPHANE', t: '02562140061' },
+                    { b: 'Acıpayam', n: 'ACIPAYAM YILDIZ İLETİŞİM' }
+                ];
                 const baseNames = ['Kardelen Gsm', 'Mobil Market', 'Ege İletişim', 'Nil Telekom', 'Trend Teknoloji'];
-                const regs = ['Marmaris', 'Bodrum', 'Fethiye', 'Datça', 'Efeler', 'Ortaca', 'Yatağan'];
+                const regs = ['Marmaris', 'Bodrum', 'Fethiye', 'Datça', 'Efeler', 'Ortaca', 'Yatağan', 'Dalaman', 'Acıpayam'];
                 const initial = excelList.map((item, i) => ({ id: i + 1, bolge: item.b, bayi: item.n.toUpperCase(), telefon: item.t || '', durum: 'Bekliyor', note: '', paymentStatus: 'pending' }));
                 for (let i = 0; initial.length < 1690; i++) {
                     const r = regs[i % regs.length], n = baseNames[i % baseNames.length];
-                    initial.push({ id: 3000000 + i, bolge: r, bayi: `${r.toUpperCase()} ${n.toUpperCase()} #${i + 1}`, telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`, durum: 'Bekliyor', note: '', paymentStatus: 'pending' });
+                    initial.push({ id: 5000000 + i, bolge: r, bayi: `${r.toUpperCase()} ${n.toUpperCase()} #${i + 1}`, telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`, durum: 'Bekliyor', note: '', paymentStatus: 'pending' });
                 }
-                return initial;
+                return initial.slice(0, 1690);
             }, []);
 
             useEffect(() => {
                 try {
-                    const saved = localStorage.getItem('saha_pro_v54_stable_sync');
+                    const storageKey = 'saha_pro_v55_master_final';
+                    const saved = localStorage.getItem(storageKey);
                     if (saved) {
                         const parsed = JSON.parse(saved);
                         if (Array.isArray(parsed) && parsed.length >= 1690) setData(parsed);
@@ -132,7 +147,7 @@
                 } catch (e) { setData(loadInitialData()); }
             }, [loadInitialData]);
 
-            useEffect(() => { if (data.length > 0) localStorage.setItem('saha_pro_v54_stable_sync', JSON.stringify(data)); }, [data]);
+            useEffect(() => { if (data.length > 0) localStorage.setItem('saha_pro_v55_master_final', JSON.stringify(data)); }, [data]);
 
             const callAI = async () => {
                 setIsAiLoading(true);
@@ -141,7 +156,7 @@
                 try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: `Aşağıdaki saha notlarını analiz et ve kısa özet çıkar:\n\n${notes}` }] }] })
+                        body: JSON.stringify({ contents: [{ parts: [{ text: `Saha notlarını analiz et ve profesyonel bir özet çıkar:\n\n${notes}` }] }] })
                     });
                     const result = await res.json();
                     setAiResult(result.candidates?.[0]?.content?.parts?.[0]?.text || "Hata oluştu.");
@@ -162,28 +177,38 @@
             if (data.length === 0) return null;
 
             return (
-                <div className="min-h-screen flex flex-col pb-16 bg-[#F8FAFC]">
+                <div className="min-h-screen flex flex-col pb-14 bg-[#F8FAFC]">
                     <div className="app-header px-4 pb-3 shadow-xl sticky top-0 z-40" style={{ backgroundColor: theme }}>
-                        <div className="max-w-xl mx-auto pt-6 flex flex-col gap-2">
+                        <div className="max-w-xl mx-auto pt-4 flex flex-col gap-2">
                             <div className="flex justify-between items-center text-white">
-                                <div className="flex items-center gap-2"><div className="app-logo"><Icon name="logo" size={18} style={{ color: theme }} /></div>
-                                <div><h1 className="text-sm font-black italic">SAHA PRO V54</h1><p className="text-[7px] opacity-70 uppercase tracking-widest">{data.length} NOKTA</p></div></div>
-                                <div className="flex items-center gap-2"><button onClick={() => setTheme(theme === '#4f46e5' ? '#10b981' : '#4f46e5')} className="bg-white/10 p-1.5 rounded-lg active:scale-90"><div className="theme-dot" style={{ backgroundColor: theme }}></div></button><span className="text-[10px] font-black">%{stats.pct}</span></div>
+                                <div className="flex items-center gap-2">
+                                    <div className="app-logo"><Icon name="logo" size={18} style={{ color: theme }} /></div>
+                                    <div><h1 className="text-sm font-black italic">SAHA PRO v55</h1><p className="text-[7px] opacity-70 font-bold uppercase tracking-widest">{data.length} NOKTA</p></div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button onClick={() => setTheme(theme === '#4f46e5' ? '#10b981' : '#4f46e5')} className="bg-white/10 p-1.5 rounded-lg active:scale-90 border border-white/10"><div className="w-3 h-3 rounded-full" style={{ backgroundColor: theme }}></div></button>
+                                    <span className="text-[10px] font-black">%{stats.pct}</span>
+                                </div>
                             </div>
-                            {activeTab === 'liste' && <div className="relative"><div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40"><Icon name="search" size={14} /></div><input type="text" placeholder="Hızlı ara..." className="w-full bg-white/15 border border-white/20 text-white placeholder-white/40 rounded-lg py-1.5 pl-9 outline-none text-[11px] font-semibold" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>}
+                            {activeTab === 'liste' && <div className="relative"><div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40"><Icon name="search" size={14} /></div><input type="text" placeholder="Hızlı ara (Türkçe Fix)..." className="w-full bg-white/15 border border-white/20 text-white placeholder-white/40 rounded-lg py-1.5 pl-9 outline-none text-[11px] font-semibold" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>}
                         </div>
                     </div>
                     <div className="flex-1 p-3 max-w-xl mx-auto w-full">
                         {activeTab === 'liste' && selectedRegion === 'Dashboard' && !searchTerm && <div className="animate-in fade-in duration-300 grid grid-cols-3 gap-2 text-center">{allRegions.map(reg => <button key={reg} onClick={() => setSelectedRegion(reg)} className="bg-white border border-slate-100 p-2.5 rounded-xl flex flex-col items-center active:scale-95 transition-all"><div className="bg-slate-50 p-2 rounded-lg mb-1.5 text-indigo-600" style={{ color: theme }}><Icon name="map" size={18} /></div><span className="text-[9px] font-black uppercase truncate w-full">{reg}</span></button>)}</div>}
-                        {(activeTab === 'liste' && (selectedRegion !== 'Dashboard' || searchTerm)) && <div className="animate-in fade-in duration-300"><div className="flex justify-between items-center mb-3"><h2 className="text-slate-400 font-black text-[9px] uppercase tracking-widest">{selectedRegion === 'Dashboard' ? 'ARAMA' : selectedRegion}</h2><button onClick={() => {setSelectedRegion('Dashboard'); setSearchTerm('');}} className="text-[9px] font-black text-indigo-600 border-b border-indigo-100">GERİ</button></div>{filteredData.map(item => <DealerCard key={item.id} item={item} theme={theme} onToggle={(id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Bekliyor' ? 'Tamamlandı' : 'Bekliyor'} : x))} onRemove={(id) => setData(d => d.filter(x => x.id !== id))} onAddNote={(id) => {const n = window.prompt('Not:'); if(n) setData(d => d.map(x => x.id === id ? {...x, note: n} : x))}} onTogglePayment={(id) => setData(d => d.map(x => x.id === id ? {...x, paymentStatus: x.paymentStatus === 'paid' ? 'pending' : 'paid'} : x))} />)}</div>}
-                        {activeTab === 'ozet' && <div className="animate-in fade-in duration-300 space-y-4"><div className="bg-white p-6 rounded-3xl shadow-md text-center"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">VERİMLİLİK</p><div className="text-6xl font-black text-slate-900 tracking-tighter">%{stats.pct}</div><button onClick={callAI} disabled={isAiLoading} className={`mt-6 w-full py-2.5 rounded-xl flex items-center justify-center gap-2 font-black text-[10px] uppercase transition-all ${isAiLoading ? 'bg-slate-100 text-slate-400' : 'bg-indigo-600 text-white ai-glow'}`}><Icon name="sparkles" size={14} className={isAiLoading ? 'animate-spin' : ''} /> {isAiLoading ? 'ANALİZ EDİLİYOR...' : 'YAPAY ZEKA ÖZETİ'}</button>{aiResult && <div className="mt-4 p-3 bg-indigo-50 rounded-xl text-[10px] text-left text-indigo-900 leading-relaxed whitespace-pre-wrap shadow-inner">{aiResult}</div>}</div><div className="grid grid-cols-2 gap-2"><div className="bg-white p-4 rounded-xl border border-slate-100 flex flex-col items-center"><p className="text-[8px] font-black text-slate-400 uppercase">TOPLAM</p><p className="text-xl font-black text-slate-900">{stats.total}</p></div><div className="bg-white p-4 rounded-xl border border-slate-100 flex flex-col items-center"><p className="text-[8px] font-black text-emerald-500 uppercase">BİTEN</p><p className="text-xl font-black text-emerald-600">{stats.done}</p></div></div></div>}
+                        {(activeTab === 'liste' && (selectedRegion !== 'Dashboard' || searchTerm)) && <div className="animate-in fade-in duration-300"><div className="flex justify-between items-center mb-3 px-1"><h2 className="text-slate-400 font-black text-[9px] uppercase tracking-widest">{selectedRegion === 'Dashboard' ? 'ARAMA' : selectedRegion}</h2><button onClick={() => {setSelectedRegion('Dashboard'); setSearchTerm('');}} className="text-[9px] font-black text-indigo-600 border-b border-indigo-100">GERİ</button></div>{filteredData.map(item => <DealerCard key={item.id} item={item} theme={theme} onToggle={(id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı'} : x))} onRemove={(id) => setData(d => d.filter(x => x.id !== id))} onOpenNote={(id) => setNoteModal({ open: true, id, text: data.find(x => x.id === id)?.note || '' })} onTogglePayment={(id) => setData(d => d.map(x => x.id === id ? {...x, paymentStatus: x.paymentStatus === 'paid' ? 'pending' : 'paid'} : x))} />)}</div>}
+                        {activeTab === 'ozet' && <div className="animate-in fade-in duration-300 space-y-4"><div className="bg-white p-6 rounded-3xl shadow-md text-center"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">VERİMLİLİK</p><div className="text-6xl font-black text-slate-900 tracking-tighter italic">%{stats.pct}</div><button onClick={callAI} disabled={isAiLoading} className={`mt-6 w-full py-2.5 rounded-xl flex items-center justify-center gap-2 font-black text-[10px] uppercase transition-all ${isAiLoading ? 'bg-slate-100 text-slate-400' : 'bg-indigo-600 text-white ai-glow'}`}><Icon name="sparkles" size={14} className={isAiLoading ? 'animate-spin' : ''} /> {isAiLoading ? 'ANALİZ EDİLİYOR...' : 'YAPAY ZEKA ÖZETİ'}</button>{aiResult && <div className="mt-4 p-3 bg-indigo-50 rounded-xl text-[10px] text-left text-indigo-900 leading-relaxed whitespace-pre-wrap shadow-inner border border-indigo-100">{aiResult}</div>}</div><div className="grid grid-cols-2 gap-2"><div className="bg-white p-4 rounded-xl border border-slate-100 flex flex-col items-center"><p className="text-[8px] font-black text-slate-400 uppercase">TOPLAM</p><p className="text-xl font-black text-slate-900">{stats.total}</p></div><div className="bg-white p-4 rounded-xl border border-slate-100 flex flex-col items-center"><p className="text-[8px] font-black text-emerald-500 uppercase">BİTEN</p><p className="text-xl font-black text-emerald-600">{stats.done}</p></div></div></div>}
                     </div>
-                    <div className="fixed bottom-0 left-0 right-0 bottom-bar px-8 py-1 flex justify-around items-center z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-                        <button onClick={() => { setActiveTab('liste'); setSelectedRegion('Dashboard'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-0.5 transition-all ${activeTab === 'liste' ? 'text-indigo-600 font-bold' : 'text-slate-300 opacity-70'}`}><Icon name="home" size={18} /><span className="text-[8px] font-black uppercase">PANELLER</span></button>
-                        <button onClick={() => setIsModalOpen(true)} className="bg-slate-900 text-white p-2 rounded-xl -mt-5 border-[3px] border-[#F8FAFC] shadow-xl active:scale-90 transition-transform"><Icon name="plus" size={18} /></button>
-                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-0.5 transition-all ${activeTab === 'ozet' ? 'text-indigo-600 font-bold' : 'text-slate-300 opacity-70'}`}><Icon name="chart" size={18} /><span className="text-[8px] font-black uppercase">ANALİZ</span></button>
+                    {/* Ultra Kompakt Alt Bar */}
+                    <div className="fixed bottom-0 left-0 right-0 bottom-bar px-8 flex justify-around items-center z-40 shadow-[0_-2px_15px_rgba(0,0,0,0.05)]">
+                        <button onClick={() => { setActiveTab('liste'); setSelectedRegion('Dashboard'); window.scrollTo(0,0); }} className={`flex flex-col items-center transition-all ${activeTab === 'liste' ? 'text-indigo-600 font-bold scale-105' : 'text-slate-300 opacity-70'}`}><Icon name="home" size={20} /><span className="text-[7px] font-black uppercase tracking-widest mt-0.5">PANELLER</span></button>
+                        <button onClick={() => setIsModalOpen(true)} className="bg-[#0F172A] text-white p-2 rounded-xl -mt-5 border-[3px] border-[#F8FAFC] shadow-xl active:scale-90 transition-transform"><Icon name="plus" size={20} /></button>
+                        <button onClick={() => { setActiveTab('ozet'); window.scrollTo(0,0); }} className={`flex flex-col items-center transition-all ${activeTab === 'ozet' ? 'text-indigo-600 font-bold scale-105' : 'text-slate-300 opacity-70'}`}><Icon name="chart" size={20} /><span className="text-[7px] font-black uppercase tracking-widest mt-0.5">ANALİZ</span></button>
                     </div>
-                    {isModalOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"><div className="modal-blur absolute inset-0" onClick={() => setIsModalOpen(false)}></div><div className="bg-white w-full max-w-xs rounded-2xl p-6 shadow-2xl relative z-10 border border-slate-100"><div className="flex justify-between items-center mb-4"><h2 className="text-sm font-bold uppercase">YENİ KAYIT</h2><button onClick={() => setIsModalOpen(false)} className="p-1 text-slate-400"><Icon name="close" size={16} /></button></div><form onSubmit={(e) => { e.preventDefault(); setData([{...form, id: Date.now(), durum: 'Bekliyor', paymentStatus: 'pending', note: ''}, ...data]); setIsModalOpen(false); }} className="space-y-2.5"><input type="text" placeholder="Ünvan" required className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-[11px] font-bold uppercase outline-none" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} /><input type="text" placeholder="Bölge" required className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-[11px] font-bold uppercase outline-none" value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} /><input type="tel" placeholder="Telefon" className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-[11px] outline-none" value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} /><button type="submit" className="w-full text-white py-2.5 rounded-lg font-black uppercase text-[10px] tracking-widest mt-2" style={{ backgroundColor: theme }}>KAYDET</button></form></div></div>}
+
+                    {/* Not Modal (Beyaz Ekran Engelleyici) */}
+                    {noteModal.open && <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"><div className="modal-blur absolute inset-0" onClick={() => setNoteModal({ open: false, id: null, text: '' })}></div><div className="bg-white w-full max-w-xs rounded-2xl p-6 shadow-2xl relative z-10 border border-slate-100"><div className="flex justify-between items-center mb-4 font-bold text-xs">NOT EKLE / DÜZENLE <button onClick={() => setNoteModal({ open: false, id: null, text: '' })}><Icon name="close" size={16} /></button></div><textarea className="w-full bg-slate-50 border border-slate-100 rounded-lg p-3 text-[11px] outline-none h-24 font-medium" value={noteModal.text} onChange={e => setNoteModal({...noteModal, text: e.target.value})} placeholder="Ziyaret notunu buraya yazın..." /><button onClick={() => { setData(d => d.map(x => x.id === noteModal.id ? {...x, note: noteModal.text} : x)); setNoteModal({ open: false, id: null, text: '' }); }} className="w-full text-white py-2.5 rounded-lg font-black uppercase text-[10px] tracking-widest mt-3 shadow-lg" style={{ backgroundColor: theme }}>KAYDET</button></div></div>}
+
+                    {isModalOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"><div className="modal-blur absolute inset-0" onClick={() => setIsModalOpen(false)}></div><div className="bg-white w-full max-w-xs rounded-2xl p-6 shadow-2xl relative z-10 border border-slate-100"><div className="flex justify-between items-center mb-4 font-bold text-xs uppercase">YENİ KAYIT <button onClick={() => setIsModalOpen(false)}><Icon name="close" size={16} /></button></div><form onSubmit={(e) => { e.preventDefault(); setData([{...form, id: Date.now(), durum: 'Bekliyor', paymentStatus: 'pending', note: ''}, ...data]); setIsModalOpen(false); setForm({bayi:'', bolge:'', telefon:''}); }} className="space-y-2.5"><input type="text" placeholder="Ünvan" required className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-[11px] font-bold uppercase outline-none" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} /><input type="text" placeholder="Bölge" required className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-[11px] font-bold uppercase outline-none" value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} /><input type="tel" placeholder="Telefon" className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2.5 text-[11px] outline-none" value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} /><button type="submit" className="w-full text-white py-2.5 rounded-lg font-black uppercase text-[10px] tracking-widest mt-2 shadow-lg" style={{ backgroundColor: theme }}>LİSTEYE KAYDET</button></form></div></div>}
                 </div>
             );
         };
