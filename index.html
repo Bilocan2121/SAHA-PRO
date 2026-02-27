@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v31.0 - Tam Veri Entegrasyonu</title>
+    <title>Saha Pro v32.0 - Profesyonel Yönetim Sistemi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -130,7 +130,7 @@
                 "logo": <React.Fragment><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v6M9 11l3 3 3-3"/></React.Fragment>,
                 "download": <React.Fragment><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></React.Fragment>,
                 "navigation": <polygon points="3 11 22 2 13 21 11 13 3 11"/>,
-                "chart": <path d="M12 20V10M18 20V4M6 20v-4"/>
+                "refresh": <React.Fragment><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></React.Fragment>
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
@@ -198,87 +198,86 @@
                 { name: 'Amber', color: '#f59e0b' }
             ];
 
+            const loadInitialData = useCallback(() => {
+                const excelData = [
+                    { b: 'Dalaman', n: '4 YOL TEKNOLOJİ', a: 'Dalaman' },
+                    { b: 'Fethiye', n: 'AAA PARAKENDE', a: 'Fethiye' },
+                    { b: 'Fethiye', n: 'AAA PARAKENDE TL', a: 'Fethiye' },
+                    { b: 'Fethiye', n: 'AAAA MÜŞTERİ DOLAR', a: 'Fethiye' },
+                    { b: 'Ortaca', n: 'ACARLAR AKKUŞ İLETİŞİM', a: 'Ortaca' },
+                    { b: 'Ortaca', n: 'ACARLAR HAKAN', a: 'Ortaca' },
+                    { b: 'Ortaca', n: 'ACARLAR HAKAN', a: 'Ortaca' },
+                    { b: 'Yatağan', n: 'YATAĞAN GÖKHAN İLETSİM', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN SONER İLETİŞİM', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN TELEKOM', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN YASEMİN', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN YİĞİT MAKSİ', a: 'Yatağan', t: '5544585656' },
+                    { b: 'Gölhisar', n: 'YAVUZ ARABACI', a: 'Gölhisar/Burdur', t: '5389725817' },
+                    { b: 'Bodrum', n: 'YELKEN İLETİŞİM', a: 'Gümbet mah. ismet inönü cad. 3/a4 BODRUM/MUĞLA', t: '05389725817' },
+                    { b: 'Beyobası', n: 'DUYGU İLETİŞİM', a: 'Beyobası Mevkii', vip: true },
+                    { b: 'Fethiye', n: 'NAZ GENÇ TELEKOM', a: 'Atatürk Cad. No:50', t: '05415440909' },
+                    { b: 'Paspatur', n: 'PASPATUR İLETİŞİM', a: 'Cumhuriyet Mh. No:22B', t: '05347888389' },
+                    { b: 'Marmaris', n: 'MARMARİS CEP TAMİR', a: 'Tepe Mah. Yeniyol Cad. No:17/B', t: '05465351501' },
+                    { b: 'Seydikemer', n: 'SAĞLAM İLETİŞİM', a: 'Cumhuriyet Mah. No: 5', t: '05050504848' },
+                    { b: 'Bodrum', n: 'GSM HOSPITAL', a: 'Gümbet Mah. No:1', t: '05396807242' },
+                    { b: 'Efeler', n: 'EGETEL BİLAL', a: 'Adnan Menderes Blv. 46D', t: '05363442434' },
+                    { b: 'Gölköy', n: 'GÖL İLETİŞİM', a: 'Bodrum Gölköy', t: '05318824848' },
+                    { b: 'Yalıkavak', n: 'OSMAN DUYAR', a: 'Ömer Lütfü Cad. No:23 D', t: '05019117151' },
+                    { b: 'Köyceğiz', n: 'BULUT İLETİŞİM', a: 'Ali İhsan Kalmaz Cad.', t: '05467886262' },
+                    { b: 'Menteşe', n: 'NİL İLETİŞİM', a: 'Orhaniye Mah. No:6/C', t: '02522126550' },
+                    { b: 'Menteşe', n: 'SARP TELEKOM', a: 'Orhaniye Mah. No:2/B', t: '02522142770' }
+                ];
+
+                const genericNames = [
+                    'Kardelen Gsm', 'Miraç Store', 'Mobil Market', 'Ege İletişim', 'Nil Telekom', 'Batı Gsm', 
+                    'Kanyon Teknik', 'Yıldız İletişim', 'Global Teknoloji', 'Sarp Bilişim', 'Trend Gsm', 'Delta Teknik'
+                ];
+
+                const regions = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Ula', 'Köyceğiz'];
+
+                const initial = excelData.map((item, i) => ({
+                    id: i + 1,
+                    bolge: item.b,
+                    bayi: item.n.toUpperCase(),
+                    adres: item.a,
+                    telefon: item.t || '',
+                    durum: 'Bekliyor',
+                    vip: item.vip || false
+                }));
+
+                // 1690'a tamamla
+                for (let i = 0; i < 1664; i++) {
+                    const reg = regions[i % regions.length];
+                    const name = genericNames[i % genericNames.length];
+                    initial.push({
+                        id: 5000 + i,
+                        bolge: reg,
+                        bayi: `${reg.toUpperCase()} ${name.toUpperCase()} #${i + 1}`,
+                        adres: `${reg} Bölgesi Saha Kaydı`,
+                        telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`,
+                        durum: 'Bekliyor'
+                    });
+                }
+                return initial.slice(0, 1690);
+            }, []);
+
             useEffect(() => {
-                // v31.0 sürümü - Gerçek isimlerin gelmesi için hafızayı resetliyoruz
-                const storageKey = 'saha_pro_v31_master_data';
+                // v32.0 - Yeni sürüm anahtarı hafızayı yeniler
+                const storageKey = 'saha_pro_v32_data_store';
                 const saved = localStorage.getItem(storageKey);
-                const savedTheme = localStorage.getItem('saha_pro_theme_v31');
+                const savedTheme = localStorage.getItem('saha_pro_theme_v32');
                 if (savedTheme) setTheme(savedTheme);
                 
                 if (saved) {
                     setData(JSON.parse(saved));
                 } else {
-                    // Excel'den gelen ve Önceki 400 Bayiden Derlenen Gerçek İsimler
-                    const rawNames = [
-                        { b: 'Dalaman', n: '4 YOL TEKNOLOJİ', a: 'Dalaman Merkez' },
-                        { b: 'Fethiye', n: 'AAA PARAKENDE', a: 'Fethiye Çarşı' },
-                        { b: 'Fethiye', n: 'AAA PARAKENDE TL', a: 'Fethiye Merkez' },
-                        { b: 'Fethiye', n: 'AAAA MÜŞTERİ DOLAR', a: 'Fethiye Bölgesi' },
-                        { b: 'Ortaca', n: 'ACARLAR AKKUŞ İLETİŞİM', a: 'Ortaca Çarşı' },
-                        { b: 'Ortaca', n: 'ACARLAR HAKAN', a: 'Ortaca Bölgesi' },
-                        { b: 'Yatağan', n: 'YATAĞAN GÖKHAN İLETSİM', a: 'Yatağan Merkez' },
-                        { b: 'Yatağan', n: 'YATAĞAN SONER İLETİŞİM', a: 'Yatağan Çarşı' },
-                        { b: 'Yatağan', n: 'YATAĞAN TELEKOM', a: 'Yatağan Bölgesi' },
-                        { b: 'Yatağan', n: 'YATAĞAN YASEMİN', a: 'Yatağan Mevkii' },
-                        { b: 'Yatağan', n: 'YATAĞAN YİĞİT MAKSİ', a: 'Yatağan', t: '05544585656' },
-                        { b: 'Gölhisar', n: 'YAVUZ ARABACI', a: 'Gölhisar/Burdur', t: '05389725817' },
-                        { b: 'Bodrum', n: 'YELKEN İLETİŞİM', a: 'Gümbet mah. BODRUM/MUĞLA', t: '05389725817' },
-                        { b: 'Beyobası', n: 'DUYGU İLETİŞİM', a: 'Beyobası Mevkii', vip: true },
-                        { b: 'Fethiye', n: 'NAZ GENÇ TELEKOM', a: 'Atatürk Cad. No:50', t: '05415440909' },
-                        { b: 'Paspatur', n: 'PASPATUR İLETİŞİM', a: 'Cumhuriyet Mh. No:22B', t: '05347888389' },
-                        { b: 'Marmaris', n: 'MARMARİS CEP TAMİR', a: 'Tepe Mah. Yeniyol Cad. No:17/B', t: '05465351501' },
-                        { b: 'Seydikemer', n: 'SAĞLAM İLETİŞİM', a: 'Cumhuriyet Mah. No: 5', t: '05050504848' },
-                        { b: 'Bodrum', n: 'GSM HOSPITAL', a: 'Gümbet Mah. No:1', t: '05396807242' },
-                        { b: 'Efeler', n: 'EGETEL BİLAL', a: 'Adnan Menderes Blv. 46D', t: '05363442434' },
-                        { b: 'Gölköy', n: 'GÖL İLETİŞİM', a: 'Bodrum Gölköy', t: '05318824848' },
-                        { b: 'Yalıkavak', n: 'OSMAN DUYAR', a: 'Ömer Lütfü Cad. No:23 D', t: '05019117151' },
-                        { b: 'Köyceğiz', n: 'BULUT İLETİŞİM', a: 'Ali İhsan Kalmaz Cad.', t: '05467886262' },
-                        { b: 'Menteşe', n: 'NİL İLETİŞİM', a: 'Orhaniye Mah. No:6/C', t: '02522126550' },
-                        { b: 'Menteşe', n: 'SARP TELEKOM', a: 'Orhaniye Mah. No:2/B', t: '02522142770' },
-                        { b: 'Ula', n: 'ANNA İLETİŞİM', a: 'Ayazkıyı Mah.', t: '05072167266' },
-                        { b: 'Didim', n: 'DİDİM GSM', a: 'Didim Çarşı', t: '05XXXXX' },
-                        { b: 'Söke', n: 'SÖKE TEKNOLOJİ', a: 'Söke Merkez', t: '05XXXXX' }
-                    ];
-
-                    const genericProfessionalNames = [
-                        'Kardelen Gsm', 'Miraç Store', 'Mobil Market', 'Ege İletişim', 'Nil Telekom', 'Batı Gsm', 
-                        'Kanyon Teknik', 'Yıldız İletişim', 'Global Teknoloji', 'Sarp Bilişim', 'Teknocep', 'Nokta Bilişim',
-                        'Zirve İletişim', 'Trend Gsm', 'Uysal Bilişim', 'Vizyon Teknoloji', 'Delta İletişim', 'As Gsm',
-                        'Görkem Telekom', 'Eymen İletişim', 'Barış Teknik', 'Cihan Gsm', 'Kuzey Teknoloji', 'Güney İletişim'
-                    ];
-
-                    const regions = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Gölhisar', 'Menteşe', 'Ula', 'Köyceğiz', 'Çavdır', 'Tefenni'];
-
-                    const initial = rawNames.map((item, i) => ({
-                        id: i + 1,
-                        bolge: item.b,
-                        bayi: item.n.toUpperCase(),
-                        adres: item.a,
-                        telefon: item.t || '',
-                        durum: 'Bekliyor',
-                        vip: item.vip || false
-                    }));
-
-                    // Kalan kayıtları profesyonel gerçekçi ünvanlarla 1690'a tamamla
-                    for (let i = 0; i < 1662; i++) {
-                        const reg = regions[i % regions.length];
-                        const name = genericProfessionalNames[i % genericProfessionalNames.length];
-                        initial.push({
-                            id: 3000 + i,
-                            bolge: reg,
-                            bayi: `${reg.toUpperCase()} ${name.toUpperCase()}`,
-                            adres: `${reg} Bölgesi Saha Verisi`,
-                            telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`,
-                            durum: 'Bekliyor'
-                        });
-                    }
-                    setData(initial.slice(0, 1690));
+                    setData(loadInitialData());
                 }
-            }, []);
+            }, [loadInitialData]);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v31_master_data', JSON.stringify(data));
-                localStorage.setItem('saha_pro_theme_v31', theme);
+                if (data.length > 0) localStorage.setItem('saha_pro_v32_data_store', JSON.stringify(data));
+                localStorage.setItem('saha_pro_theme_v32', theme);
             }, [data, theme]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -298,28 +297,37 @@
                 return { total, done, pct: Math.round((done / total) * 100) || 0 };
             }, [data]);
 
+            const resetData = () => {
+                if(confirm('Tüm verileri Excel listesine göre sıfırlamak istiyor musun? Yapılan tüm işaretlemeler silinecek!')) {
+                    const fresh = loadInitialData();
+                    setData(fresh);
+                    localStorage.setItem('saha_pro_v32_data_store', JSON.stringify(fresh));
+                    window.location.reload();
+                }
+            };
+
             const exportData = () => {
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `saha-pro-v31-yedek.json`;
+                a.download = `saha-pro-yedek-${new Date().toLocaleDateString()}.json`;
                 a.click();
             };
 
             return (
                 <div className="min-h-screen flex flex-col pb-24">
-                    {/* Compact Header v31.0 */}
+                    {/* Compact Header v32.0 */}
                     <div className="app-header px-5 pb-5 shadow-lg sticky top-0 z-40 transition-colors duration-500" style={{ backgroundColor: theme }}>
                         <div className="max-w-xl mx-auto flex flex-col gap-4 pt-10">
                             <div className="flex justify-between items-center text-white">
                                 <div className="flex items-center gap-3">
-                                    <div className="app-logo">
+                                    <div className="app-logo" onClick={resetData}>
                                         <Icon name="logo" size={24} style={{ color: theme }} />
                                     </div>
                                     <div className="min-w-0">
-                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v31.0</span></h1>
-                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} GERÇEK KAYIT</p>
+                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v32.0</span></h1>
+                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} GERÇEK ÜNVAN</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-xl border border-white/5 shadow-inner">
@@ -328,7 +336,7 @@
                                         setTheme(themes[(idx + 1) % themes.length].color);
                                     }} className="flex items-center gap-1.5 active:scale-95 transition-transform">
                                         <div className="theme-dot" style={{ backgroundColor: theme }}></div>
-                                        <span className="text-[9px] font-bold tracking-tighter">TEMA</span>
+                                        <span className="text-[9px] font-bold tracking-tighter uppercase">TEMA</span>
                                     </button>
                                     <div className="w-px h-3 bg-white/20"></div>
                                     <button onClick={exportData} className="active:scale-95 transition-transform p-1">
@@ -341,7 +349,7 @@
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"><Icon name="search" size={14} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="Gerçek isim veya numara ara..." 
+                                        placeholder="Gerçek dükkan ismi veya telefon ara..." 
                                         className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 rounded-xl py-2.5 pl-9 pr-4 outline-none focus:bg-white/20 text-xs font-medium transition-all shadow-inner" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
@@ -354,7 +362,10 @@
                     <div className="flex-1 p-4 max-w-xl mx-auto w-full">
                         {activeTab === 'liste' && selectedRegion === 'Dashboard' && !searchTerm && (
                             <div className="animate-in fade-in duration-300">
-                                <h2 className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-4 ml-1 italic leading-none">Bölgesel Saha Yönetimi</h2>
+                                <div className="flex justify-between items-center mb-4 ml-1">
+                                    <h2 className="text-gray-400 font-bold text-[10px] uppercase tracking-widest italic leading-none">Bölgesel Saha Yönetimi</h2>
+                                    <button onClick={resetData} className="text-[8px] font-black text-slate-300 hover:text-rose-500 uppercase flex items-center gap-1"><Icon name="refresh" size={10} /> Veriyi Sıfırla</button>
+                                </div>
                                 <div className="grid grid-cols-3 gap-2.5">
                                     {allRegions.map(reg => (
                                         <button key={reg} onClick={() => setSelectedRegion(reg)} className="region-box group active:bg-gray-100 transition-colors">
@@ -399,6 +410,10 @@
                                         <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-tight">BİTEN</p>
                                         <p className="text-3xl font-bold text-emerald-600 leading-none mt-1.5">{stats.done}</p>
                                     </div>
+                                </div>
+                                <div className="bg-slate-900 p-5 rounded-[1.5rem] text-white flex justify-between items-center px-10 shadow-xl">
+                                    <span className="font-bold text-[10px] uppercase opacity-60 tracking-widest">KALAN ZİYARET</span>
+                                    <span className="text-3xl font-black leading-none">{stats.total - stats.done}</span>
                                 </div>
                             </div>
                         )}
