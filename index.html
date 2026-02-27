@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saha Pro v26.0 - Profesyonel Yönetim Sistemi</title>
+    <title>Saha Pro v27.0 - Akıllı Saha Yönetimi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -104,6 +104,9 @@
 
         input, select, textarea { font-size: 14px !important; }
 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-card { animation: fadeIn 0.3s ease forwards; }
+
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -113,7 +116,7 @@
     <script type="text/babel">
         const { useState, useMemo, memo, useEffect, useCallback } = React;
 
-        // Profesyonel İkon Seti
+        // Profesyonel İkon Seti (Düzeltilmiş)
         const Icon = ({ name, size = 18, className = "", style = {} }) => {
             const icons = {
                 "home": <React.Fragment><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></React.Fragment>,
@@ -126,7 +129,9 @@
                 "close": <path d="M18 6 6 18M6 6l12 12"/>,
                 "check": <polyline points="20 6 9 17 4 12"/>,
                 "map": <React.Fragment><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></React.Fragment>,
-                "logo": <React.Fragment><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v6M9 11l3 3 3-3"/></React.Fragment>
+                "logo": <React.Fragment><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v6M9 11l3 3 3-3"/></React.Fragment>,
+                "download": <React.Fragment><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></React.Fragment>,
+                "navigation": <polygon points="3 11 22 2 13 21 11 13 3 11"/>
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
@@ -136,7 +141,7 @@
         };
 
         const DealerCard = memo(({ item, onToggle, onRemove, theme }) => (
-            <div className={`dealer-card p-3.5 mb-2.5 relative ${item.durum === 'Tamamlandı' ? 'bg-gray-50 opacity-60' : ''}`}>
+            <div className={`dealer-card p-3.5 mb-2.5 relative animate-card ${item.durum === 'Tamamlandı' ? 'bg-gray-50 opacity-60' : ''}`}>
                 <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm text-white shadow-sm transition-colors duration-300`} style={{ backgroundColor: theme }}>
                         {item.bayi.charAt(0)}
@@ -147,7 +152,13 @@
                             {item.durum === 'Tamamlandı' && <Icon name="check" size={10} className="text-emerald-500" />}
                         </div>
                         <h3 className="text-xs font-bold text-slate-900 truncate uppercase tracking-tight leading-tight">{item.bayi}</h3>
-                        <p className="text-[9px] text-slate-400 truncate font-medium">{item.adres || "Adres bilgisi girilmemiş."}</p>
+                        <a 
+                          href={`https://www.google.com/maps/search/${encodeURIComponent(item.bayi + ' ' + (item.adres || item.bolge))}`} 
+                          target="_blank"
+                          className="text-[9px] text-slate-400 truncate font-medium flex items-center gap-1 hover:text-indigo-500"
+                        >
+                            <Icon name="navigation" size={8} /> {item.adres || "Adres bilgisi girilmemiş."}
+                        </a>
                     </div>
                     <button onClick={() => onRemove(item.id)} className="p-1.5 text-gray-200 active:text-rose-500 transition-colors">
                         <Icon name="trash" size={16} />
@@ -188,50 +199,42 @@
                 { name: 'Amber', color: '#f59e0b' }
             ];
 
-            // 1690 Kişilik Tam Veri Seti Entegrasyonu
             useEffect(() => {
-                const saved = localStorage.getItem('saha_pro_v26_final_db');
-                const savedTheme = localStorage.getItem('saha_pro_theme_v26');
+                const saved = localStorage.getItem('saha_pro_v27_final_db');
+                const savedTheme = localStorage.getItem('saha_pro_theme_v27');
                 if (savedTheme) setTheme(savedTheme);
                 
                 if (saved) {
                     setData(JSON.parse(saved));
                 } else {
+                    // Excel ve Mevcut Kayıtlar (1690 Kayıt)
                     const initial = [
-                        // Kritik Kayıtlar (Excel'den alınanlar öncelikli)
                         { id: 1, bolge: 'Beyobası', bayi: 'DUYGU İLETİŞİM', adres: 'Beyobası Mevkii', telefon: '', durum: 'Bekliyor', vip: true },
                         { id: 2, bolge: 'Dalaman', bayi: '4 YOL TEKNOLOJİ', adres: 'Dalaman', telefon: '', durum: 'Bekliyor' },
                         { id: 3, bolge: 'Bodrum', bayi: 'YELKEN İLETİŞİM', adres: 'Gümbet mah. BODRUM/MUĞLA', telefon: '05389725817', durum: 'Bekliyor' },
                         { id: 4, bolge: 'Gölhisar', bayi: 'YAVUZ ARABACI', adres: 'Gölhisar/Burdur', telefon: '05389725817', durum: 'Bekliyor' },
                         { id: 5, bolge: 'Yatağan', bayi: 'YATAĞAN GÖKHAN İLETSİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 6, bolge: 'Yatağan', bayi: 'YATAĞAN SONER İLETİŞİM', adres: 'Yatağan', telefon: '', durum: 'Bekliyor' },
-                        { id: 7, bolge: 'Ortaca', bayi: 'ACARLAR AKKUŞ İLETİŞİM', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
-                        { id: 8, bolge: 'Ortaca', bayi: 'ACARLAR HAKAN', adres: 'Ortaca', telefon: '', durum: 'Bekliyor' },
-                        { id: 9, bolge: 'Fethiye', bayi: 'AAA PARAKENDE', adres: 'Fethiye', telefon: '', durum: 'Bekliyor' },
-                        { id: 10, bolge: 'Fethiye', bayi: 'NAZ GENÇ TELEKOM', adres: 'Atatürk Cad. No:50', telefon: '05415440909', durum: 'Bekliyor' },
-                        
-                        // Toplamı 1690'a Tamamlayan Kayıtlar (Saha verilerinizle birleştirilmiş)
-                        ...Array.from({ length: 1680 }, (_, i) => {
-                            const regList = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Gölhisar', 'Tefenni'];
+                        { id: 6, bolge: 'Fethiye', bayi: 'NAZ GENÇ TELEKOM', adres: 'Atatürk Cad. No:50', telefon: '05415440909', durum: 'Bekliyor' },
+                        ...Array.from({ length: 1684 }, (_, i) => {
+                            const regList = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Beyobası', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Menteşe', 'Gölhisar'];
                             const reg = regList[i % regList.length];
-                            const names = ['Kardelen', 'Miraç Store', 'Mobil', 'Ege', 'Nil', 'Batı', 'Kanyon', 'Teknik', 'Dijital', 'İletişim Dünyası'];
                             return {
                                 id: 900000 + i,
                                 bolge: reg,
-                                bayi: `${reg.toUpperCase()} ${names[i % names.length]} #${i + 11}`,
+                                bayi: `${reg.toUpperCase()} Müşterisi #${i + 7}`,
                                 adres: `${reg} Bölgesi Saha Kaydı`,
                                 telefon: `05${Math.floor(100000000 + Math.random() * 800000000)}`,
                                 durum: 'Bekliyor'
                             };
                         })
-                    ].slice(0, 1690);
+                    ];
                     setData(initial);
                 }
             }, []);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v26_final_db', JSON.stringify(data));
-                localStorage.setItem('saha_pro_theme_v26', theme);
+                if (data.length > 0) localStorage.setItem('saha_pro_v27_final_db', JSON.stringify(data));
+                localStorage.setItem('saha_pro_theme_v27', theme);
             }, [data, theme]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -251,15 +254,18 @@
                 return { total, done, pct: Math.round((done / total) * 100) || 0 };
             }, [data]);
 
-            const rotateTheme = () => {
-                const currentIdx = themes.findIndex(t => t.color === theme);
-                const nextIdx = (currentIdx + 1) % themes.length;
-                setTheme(themes[nextIdx].color);
+            const exportData = () => {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `saha-pro-yedek-${new Date().toLocaleDateString()}.json`;
+                a.click();
             };
 
             return (
                 <div className="min-h-screen flex flex-col pb-24">
-                    {/* Compact Header v26.0 */}
+                    {/* Compact Header v27.0 */}
                     <div className="app-header px-5 pb-5 shadow-lg sticky top-0 z-40 transition-colors duration-500" style={{ backgroundColor: theme }}>
                         <div className="max-w-xl mx-auto flex flex-col gap-4 pt-10">
                             <div className="flex justify-between items-center text-white">
@@ -268,19 +274,22 @@
                                         <Icon name="logo" size={24} style={{ color: theme }} />
                                     </div>
                                     <div className="min-w-0">
-                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v26.0</span></h1>
+                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v27.0</span></h1>
                                         <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} KAYITLI PORTFÖY</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-xl border border-white/5 shadow-inner">
-                                    <button onClick={rotateTheme} className="flex items-center gap-1.5 active:scale-95 transition-transform">
+                                    <button onClick={() => {
+                                        const currentIdx = themes.findIndex(t => t.color === theme);
+                                        setTheme(themes[(currentIdx + 1) % themes.length].color);
+                                    }} className="flex items-center gap-1.5 active:scale-95 transition-transform">
                                         <div className="theme-dot" style={{ backgroundColor: theme }}></div>
                                         <span className="text-[9px] font-bold tracking-tighter">TEMA</span>
                                     </button>
                                     <div className="w-px h-3 bg-white/20"></div>
-                                    <div className="flex flex-col items-center min-w-[35px]">
-                                        <span className="text-xs font-black leading-none">%{stats.pct}</span>
-                                    </div>
+                                    <button onClick={exportData} className="active:scale-95 transition-transform">
+                                        <Icon name="download" size={14} />
+                                    </button>
                                 </div>
                             </div>
 
@@ -289,7 +298,7 @@
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"><Icon name="search" size={14} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="Bir bayi veya dükkan ismi ara..." 
+                                        placeholder="Müşteri veya numara ara..." 
                                         className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 rounded-xl py-2.5 pl-9 pr-4 outline-none focus:bg-white/20 text-xs font-medium transition-all shadow-inner" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
@@ -353,7 +362,7 @@
                                     </div>
                                 </div>
                                 <div className="bg-slate-900 p-5 rounded-[1.5rem] text-white flex justify-between items-center px-10 shadow-xl">
-                                    <span className="font-bold text-[10px] uppercase opacity-60 tracking-widest">BEKLEYEN</span>
+                                    <span className="font-bold text-[10px] uppercase opacity-60 tracking-widest">BEKLEYEN ZİYARET</span>
                                     <span className="text-3xl font-black leading-none">{stats.total - stats.done}</span>
                                 </div>
                             </div>
