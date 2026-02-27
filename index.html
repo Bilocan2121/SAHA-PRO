@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v35.0 - Profesyonel Yönetim</title>
+    <title>Saha Pro v36.0 - Minimalist Navigasyon</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -95,7 +95,6 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            overflow: hidden;
         }
 
         .theme-dot {
@@ -104,8 +103,6 @@
             border-radius: 50%;
             border: 2px solid white;
         }
-
-        input, select, textarea { font-size: 14px !important; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-card { animation: fadeIn 0.3s ease forwards; }
@@ -128,7 +125,7 @@
                 "close": <path d="M18 6 6 18M6 6l12 12"/>,
                 "check": <polyline points="20 6 9 17 4 12"/>,
                 "map": <React.Fragment><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></React.Fragment>,
-                "logo": <React.Fragment><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></React.Fragment>,
+                "logo": <React.Fragment><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v6M9 11l3 3 3-3"/></React.Fragment>,
                 "download": <React.Fragment><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></React.Fragment>,
                 "navigation": <polygon points="3 11 22 2 13 21 11 13 3 11"/>,
                 "refresh": <React.Fragment><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></React.Fragment>,
@@ -141,41 +138,42 @@
         };
 
         const DealerCard = memo(({ item, onToggle, onRemove, theme }) => (
-            <div className={`dealer-card p-3.5 mb-2.5 relative animate-card ${item.durum === 'Tamamlandı' ? 'bg-gray-50 opacity-60' : ''}`}>
+            <div className={`dealer-card p-4 mb-3 relative animate-card ${item.durum === 'Tamamlandı' ? 'bg-gray-50 opacity-60' : ''}`}>
                 <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm text-white shadow-sm transition-colors duration-300`} style={{ backgroundColor: theme }}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg text-white shadow-sm transition-colors duration-300`} style={{ backgroundColor: theme }}>
                         {item.bayi.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className="text-[8px] font-bold uppercase tracking-widest leading-none" style={{ color: theme }}>{item.bolge}</span>
-                            {item.durum === 'Tamamlandı' && <Icon name="check" size={10} className="text-emerald-500" />}
+                        <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-[10px] font-bold uppercase tracking-widest leading-none" style={{ color: theme }}>{item.bolge}</span>
+                            {item.durum === 'Tamamlandı' && <Icon name="check" size={12} className="text-emerald-500" />}
                         </div>
-                        <h3 className="text-xs font-bold text-slate-900 truncate uppercase tracking-tight leading-tight">{item.bayi}</h3>
-                        <a 
-                          href={`https://www.google.com/maps/search/${encodeURIComponent(item.bayi)}`} 
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[9px] text-slate-400 truncate font-medium flex items-center gap-1 hover:text-indigo-500 transition-colors"
-                        >
-                            <Icon name="navigation" size={8} /> {item.adres || "Konum İçin Tıkla"}
-                        </a>
+                        <h3 className="text-sm font-extrabold text-slate-900 truncate uppercase tracking-tight leading-tight">{item.bayi}</h3>
                     </div>
-                    <button onClick={() => onRemove(item.id)} className="p-1.5 text-gray-200 active:text-rose-500 transition-colors">
-                        <Icon name="trash" size={16} />
+                    <button onClick={() => onRemove(item.id)} className="p-2 text-gray-200 active:text-rose-500">
+                        <Icon name="trash" size={18} />
                     </button>
                 </div>
-                <div className="flex gap-2 mt-3 text-center">
-                    {item.telefon ? (
-                        <a href={`tel:${item.telefon}`} className="flex-1 py-1.5 btn-call flex items-center justify-center gap-1.5 text-[10px] active:opacity-80">
-                            <Icon name="phone" size={12} /> ARA
+                
+                <div className="flex gap-2 mt-4 text-center">
+                    <a 
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(item.bayi)}`} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-3 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center gap-2 font-black text-xs active:bg-indigo-100 transition-all border border-indigo-100 shadow-sm"
+                    >
+                        <Icon name="navigation" size={18} /> KONUM
+                    </a>
+                    
+                    {item.telefon && (
+                        <a href={`tel:${item.telefon}`} className="flex-1 py-3 btn-call flex items-center justify-center gap-2 text-xs active:opacity-80 shadow-sm">
+                            <Icon name="phone" size={16} /> ARA
                         </a>
-                    ) : (
-                        <div className="flex-1 py-1.5 bg-gray-100 text-gray-400 rounded-lg flex items-center justify-center text-[9px] font-bold uppercase tracking-tighter">NO EKSİK</div>
                     )}
+                    
                     <button 
                         onClick={() => onToggle(item.id)} 
-                        className={`flex-1 py-1.5 btn-finish text-[10px] transition-all active:scale-95 ${item.durum === 'Tamamlandı' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
+                        className={`flex-1 py-3 btn-finish text-[10px] transition-all active:scale-95 shadow-sm ${item.durum === 'Tamamlandı' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
                     >
                         {item.durum === 'Tamamlandı' ? 'DÜZELT' : 'BİTİR'}
                     </button>
@@ -200,63 +198,56 @@
             ];
 
             const loadInitialData = useCallback(() => {
-                // EXCEL'DEN GELEN TÜM GERÇEK ÜNVANLAR
-                const realExcelList = [
-                    { b: 'Dalaman', n: '4 YOL TEKNOLOJİ', a: 'Dalaman' },
-                    { b: 'Fethiye', n: 'AAA PARAKENDE', a: 'Fethiye' },
-                    { b: 'Fethiye', n: 'AAA PARAKENDE TL', a: 'Fethiye' },
-                    { b: 'Fethiye', n: 'AAAA MÜŞTERİ DOLAR', a: 'Fethiye' },
-                    { b: 'Ortaca', n: 'ACARLAR AKKUŞ İLETİŞİM', a: 'Ortaca' },
-                    { b: 'Ortaca', n: 'ACARLAR HAKAN', a: 'Ortaca' },
-                    { b: 'Yatağan', n: 'YATAĞAN GÖKHAN İLETSİM', a: 'Yatağan' },
-                    { b: 'Yatağan', n: 'YATAĞAN SONER İLETİŞİM', a: 'Yatağan' },
-                    { b: 'Yatağan', n: 'YATAĞAN TELEKOM', a: 'Yatağan' },
-                    { b: 'Yatağan', n: 'YATAĞAN YASEMİN', a: 'Yatağan' },
-                    { b: 'Yatağan', n: 'YATAĞAN YİĞİT MAKSİ', a: 'Yatağan', t: '05544585656' },
-                    { b: 'Gölhisar', n: 'YAVUZ ARABACI', a: 'Gölhisar' },
-                    { b: 'Bodrum', n: 'YELKEN İLETİŞİM', a: 'Gümbet mah. BODRUM/MUĞLA', t: '05389725817' },
-                    { b: 'Beyobası', n: 'DUYGU İLETİŞİM', a: 'Beyobası Mevkii', vip: true },
-                    { b: 'Fethiye', n: 'NAZ GENÇ TELEKOM', a: 'Atatürk Cad. No:50', t: '05415440909' },
-                    { b: 'Paspatur', n: 'PASPATUR İLETİŞİM', a: 'Cumhuriyet Mh. No:22B', t: '05347888389' },
-                    { b: 'Efeler', n: 'EGETEL BİLAL', a: 'Adnan Menderes Blv. 46D', t: '05363442434' },
-                    { b: 'Efeler', n: 'NİSA AYDIN İLETİŞİM', a: 'Yedi Eylül Mah. No: 34', t: '05559914400' },
-                    { b: 'Efeler', n: 'CANLAR İLETİŞİM', a: 'Kazım Karabekir Cad. No: 24', t: '05559914400' },
-                    { b: 'Efeler', n: 'ZEYBEK CEPHANE', a: 'Çeştepe Mah. No: 36', t: '02562140061' },
-                    { b: 'Efeler', n: 'AYDIN SERDAR İLETİŞİM', a: 'Hasanefendi Mah. No:30/1', t: '05432234148' },
-                    { b: 'Efeler', n: 'EASYCEP AYDIN', a: 'Hasanefendi Mah. No:13/B', t: '05433279237' },
-                    { b: 'Marmaris', n: 'MARMARİS CEP TAMİR', a: 'Tepe Mah. Yeniyol Cad. No:17/B', t: '05465351501' },
-                    { b: 'Seydikemer', n: 'SAĞLAM İLETİŞİM', a: 'Cumhuriyet Mah. No: 5', t: '05050504848' },
-                    { b: 'Bodrum', n: 'GSM HOSPITAL', a: 'Gümbet Mah. No:1', t: '05396807242' },
-                    { b: 'Gölköy', n: 'GÖL İLETİŞİM', a: 'Gölköy Çarşı', t: '05318824848' },
-                    { b: 'Acıpayam', n: 'ACIPAYAM YILDIZ İLETİŞİM', a: 'Acıpayam', t: '' }
+                const excelData = [
+                    { b: 'Dalaman', n: '4 YOL TEKNOLOJİ' },
+                    { b: 'Fethiye', n: 'AAA PARAKENDE' },
+                    { b: 'Fethiye', n: 'AAA PARAKENDE TL' },
+                    { b: 'Fethiye', n: 'AAAA MÜŞTERİ DOLAR' },
+                    { b: 'Ortaca', n: 'ACARLAR AKKUŞ İLETİŞİM' },
+                    { b: 'Ortaca', n: 'ACARLAR HAKAN' },
+                    { b: 'Yatağan', n: 'YATAĞAN GÖKHAN İLETSİM' },
+                    { b: 'Yatağan', n: 'YATAĞAN SONER İLETİŞİM' },
+                    { b: 'Yatağan', n: 'YATAĞAN TELEKOM' },
+                    { b: 'Yatağan', n: 'YATAĞAN YASEMİN' },
+                    { b: 'Yatağan', n: 'YATAĞAN YİĞİT MAKSİ', t: '05544585656' },
+                    { b: 'Gölhisar', n: 'YAVUZ ARABACI', t: '05389725817' },
+                    { b: 'Bodrum', n: 'YELKEN İLETİŞİM', t: '05389725817' },
+                    { b: 'Beyobası', n: 'DUYGU İLETİŞİM', vip: true },
+                    { b: 'Fethiye', n: 'NAZ GENÇ TELEKOM', t: '05415440909' },
+                    { b: 'Paspatur', n: 'PASPATUR İLETİŞİM', t: '05347888389' },
+                    { b: 'Efeler', n: 'EGETEL BİLAL', t: '05363442434', vip: true },
+                    { b: 'Efeler', n: 'NİSA AYDIN İLETİŞİM', t: '05559914400' },
+                    { b: 'Efeler', n: 'CANLAR İLETİŞİM', t: '05559914400' },
+                    { b: 'Efeler', n: 'ZEYBEK CEPHANE', t: '02562140061' },
+                    { b: 'Marmaris', n: 'MARMARİS CEP TAMİR', t: '05465351501' },
+                    { b: 'Seydikemer', n: 'SAĞLAM İLETİŞİM', t: '05050504848' },
+                    { b: 'Bodrum', n: 'GSM HOSPITAL', t: '05396807242' },
+                    { b: 'Acıpayam', n: 'ACIPAYAM YILDIZ İLETİŞİM' }
                 ];
 
-                const previous400BaseNames = [
+                const genericNames = [
                     'Kardelen Gsm', 'Miraç Store', 'Mobil Market', 'Ege İletişim', 'Nil Telekom', 'Batı Gsm', 
-                    'Kanyon Teknik', 'Yıldız İletişim', 'Global Teknoloji', 'Sarp Bilişim', 'Teknocep', 'Nokta Bilişim'
+                    'Kanyon Teknik', 'Yıldız İletişim', 'Global Teknoloji', 'Sarp Bilişim'
                 ];
 
-                const regions = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Gölhisar', 'Menteşe', 'Ula', 'Köyceğiz', 'Efeler'];
+                const regions = ['Marmaris', 'Bodrum', 'Fethiye', 'Söke', 'Didim', 'Kuşadası', 'Datça', 'Acıpayam', 'Seydikemer', 'Yatağan', 'Ortaca', 'Dalaman', 'Gölhisar', 'Menteşe', 'Efeler'];
 
-                const initial = realExcelList.map((item, i) => ({
+                const initial = excelData.map((item, i) => ({
                     id: i + 1,
                     bolge: item.b,
                     bayi: item.n.toUpperCase(),
-                    adres: item.a,
                     telefon: item.t || '',
                     durum: 'Bekliyor',
                     vip: item.vip || false
                 }));
 
-                // 1690'a tamamla (Saha Kaydı yazılarını sildik)
                 for (let i = 0; i < (1690 - initial.length); i++) {
                     const reg = regions[i % regions.length];
-                    const name = previous400BaseNames[i % previous400BaseNames.length];
+                    const name = genericNames[i % genericNames.length];
                     initial.push({
-                        id: 5000 + i,
+                        id: 10000 + i,
                         bolge: reg,
                         bayi: `${reg.toUpperCase()} ${name.toUpperCase()}`,
-                        adres: `${reg} Bölgesi`,
                         telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`,
                         durum: 'Bekliyor'
                     });
@@ -265,10 +256,9 @@
             }, []);
 
             useEffect(() => {
-                // v35.0 - FORCE DATABASE REFRESH
-                const storageKey = 'saha_pro_v35_final_storage';
+                const storageKey = 'saha_pro_v36_clean_data';
                 const saved = localStorage.getItem(storageKey);
-                const savedTheme = localStorage.getItem('saha_pro_theme_v35');
+                const savedTheme = localStorage.getItem('saha_pro_theme_v36');
                 if (savedTheme) setTheme(savedTheme);
                 
                 if (saved) {
@@ -279,8 +269,8 @@
             }, [loadInitialData]);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v35_final_storage', JSON.stringify(data));
-                localStorage.setItem('saha_pro_theme_v35', theme);
+                if (data.length > 0) localStorage.setItem('saha_pro_v36_clean_data', JSON.stringify(data));
+                localStorage.setItem('saha_pro_theme_v36', theme);
             }, [data, theme]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -288,7 +278,7 @@
             const filteredData = useMemo(() => {
                 const s = searchTerm.toLowerCase();
                 return data.filter(item => {
-                    const match = item.bayi.toLowerCase().includes(s) || item.bolge.toLowerCase().includes(s) || (item.telefon && item.telefon.includes(searchTerm));
+                    const match = item.bayi.toLowerCase().includes(s) || item.bolge.toLowerCase().includes(s);
                     const regionMatch = selectedRegion === 'Dashboard' || item.bolge === selectedRegion;
                     return match && regionMatch;
                 });
@@ -301,26 +291,16 @@
             }, [data]);
 
             const resetData = () => {
-                if(confirm('Tüm listeyi Excel ünvanlarıyla sıfırdan yüklemek istiyor musun?')) {
+                if(confirm('Verileri sıfırlamak istiyor musun?')) {
                     const fresh = loadInitialData();
                     setData(fresh);
-                    localStorage.setItem('saha_pro_v35_final_storage', JSON.stringify(fresh));
+                    localStorage.setItem('saha_pro_v36_clean_data', JSON.stringify(fresh));
                     window.location.reload();
                 }
             };
 
-            const exportData = () => {
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `saha-pro-yedek-v35.json`;
-                a.click();
-            };
-
             return (
                 <div className="min-h-screen flex flex-col pb-24">
-                    {/* Compact Header v35.0 */}
                     <div className="app-header px-5 pb-5 shadow-lg sticky top-0 z-40 transition-colors duration-500" style={{ backgroundColor: theme }}>
                         <div className="max-w-xl mx-auto flex flex-col gap-4 pt-10">
                             <div className="flex justify-between items-center text-white">
@@ -329,8 +309,8 @@
                                         <Icon name="logo" size={24} style={{ color: theme }} />
                                     </div>
                                     <div className="min-w-0">
-                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v35.0</span></h1>
-                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} KAYITLI PORTFÖY</p>
+                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v36.0</span></h1>
+                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} KAYITLI DÜKKAN</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-xl border border-white/5 shadow-inner">
@@ -342,9 +322,9 @@
                                         <span className="text-[9px] font-bold tracking-tighter uppercase">TEMA</span>
                                     </button>
                                     <div className="w-px h-3 bg-white/20"></div>
-                                    <button onClick={exportData} className="active:scale-95 transition-transform p-1">
-                                        <Icon name="download" size={14} />
-                                    </button>
+                                    <div className="flex flex-col items-center min-w-[35px]">
+                                        <span className="text-xs font-black leading-none">%{stats.pct}</span>
+                                    </div>
                                 </div>
                             </div>
                             {activeTab === 'liste' && (
@@ -352,7 +332,7 @@
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"><Icon name="search" size={14} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="Ünvan veya numara ara..." 
+                                        placeholder="Dükkan ismi veya numara ara..." 
                                         className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 rounded-xl py-2.5 pl-9 pr-4 outline-none focus:bg-white/20 text-xs font-medium transition-all shadow-inner" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
@@ -365,10 +345,7 @@
                     <div className="flex-1 p-4 max-w-xl mx-auto w-full">
                         {activeTab === 'liste' && selectedRegion === 'Dashboard' && !searchTerm && (
                             <div className="animate-in fade-in duration-300">
-                                <div className="flex justify-between items-center mb-4 ml-1">
-                                    <h2 className="text-gray-400 font-bold text-[10px] uppercase tracking-widest italic leading-none">Bölgesel Saha Yönetimi</h2>
-                                    <button onClick={resetData} className="text-[8px] font-black text-slate-300 hover:text-rose-500 uppercase flex items-center gap-1"><Icon name="refresh" size={10} /> Sıfırla</button>
-                                </div>
+                                <h2 className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-4 ml-1 italic leading-none text-center">BÖLGESEL SAHA YÖNETİMİ</h2>
                                 <div className="grid grid-cols-3 gap-2.5">
                                     {allRegions.map(reg => (
                                         <button key={reg} onClick={() => setSelectedRegion(reg)} className="region-box group active:bg-gray-100 transition-colors">
@@ -383,13 +360,13 @@
                         {(activeTab === 'liste' && (selectedRegion !== 'Dashboard' || searchTerm)) && (
                             <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 <div className="flex justify-between items-center mb-3 ml-1">
-                                    <h2 className="text-gray-400 font-bold text-[9px] uppercase tracking-widest italic">{searchTerm ? 'Arama Sonuçları' : selectedRegion + ' Bölgesi'}</h2>
-                                    <button onClick={() => {setSelectedRegion('Dashboard'); setSearchTerm('');}} className="font-bold text-[10px] uppercase border-b-2 border-transparent transition-all hover:opacity-70" style={{ color: theme, borderColor: theme + '20' }}>Geri Dön</button>
+                                    <h2 className="text-gray-400 font-bold text-[9px] uppercase tracking-widest italic">{searchTerm ? 'Sorgu Sonuçları' : selectedRegion + ' Bölgesi'}</h2>
+                                    <button onClick={() => {setSelectedRegion('Dashboard'); setSearchTerm('');}} className="font-bold text-[10px] uppercase border-b-2 border-transparent transition-all hover:opacity-70" style={{ color: theme }}>Geri Dön</button>
                                 </div>
                                 {filteredData.length > 0 ? (
-                                    filteredData.map(item => <DealerCard key={item.id} item={item} theme={theme} onToggle={(id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı'} : x))} onRemove={(id) => { if(confirm('Silsin mi?')) setData(d => d.filter(x => x.id !== id)) }} />)
+                                    filteredData.map(item => <DealerCard key={item.id} item={item} theme={theme} onToggle={(id) => setData(d => d.map(x => x.id === id ? {...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı'} : x))} onRemove={(id) => { if(confirm('Silinsin mi?')) setData(d => d.filter(x => x.id !== id)) }} />)
                                 ) : (
-                                    <div className="py-24 text-center text-gray-300 flex flex-col items-center gap-2 grayscale"><Icon name="search" size={32} /><p className="font-bold text-[10px] uppercase">Müşteri Bulunamadı</p></div>
+                                    <div className="py-24 text-center text-gray-300 flex flex-col items-center gap-2 grayscale"><Icon name="search" size={32} /><p className="font-bold text-[10px] uppercase">Dükkan Bulunamadı</p></div>
                                 )}
                             </div>
                         )}
@@ -398,7 +375,7 @@
                             <div className="animate-in fade-in duration-500 space-y-4 text-center">
                                 <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 blur-2xl opacity-10" style={{ backgroundColor: theme }}></div>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 italic leading-none">İŞLEM BAŞARI DURUMU</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 italic leading-none">OPERASYON TAMAMLANMA ORANI</p>
                                     <div className="text-8xl font-black text-gray-900 tracking-tighter leading-none italic select-none">%{stats.pct}</div>
                                     <div className="w-full bg-gray-50 h-2.5 rounded-full mt-12 overflow-hidden border shadow-inner">
                                         <div className="h-full transition-all duration-1000 shadow-lg" style={{ width: `${stats.pct}%`, backgroundColor: theme }}></div>
@@ -432,7 +409,6 @@
                         </button>
                     </div>
 
-                    {/* Modal Ekleme */}
                     {isModalOpen && (
                         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                             <div className="modal-blur absolute inset-0" onClick={() => setIsModalOpen(false)}></div>
@@ -445,7 +421,6 @@
                                     <input type="text" placeholder="Dükkan Ünvanı" required className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 uppercase text-[12px] transition-all" value={form.bayi} onChange={e => setForm({...form, bayi: e.target.value.toUpperCase()})} />
                                     <input type="text" placeholder="Bölge / İlçe" required className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 uppercase text-[12px] transition-all" value={form.bolge} onChange={e => setForm({...form, bolge: e.target.value})} />
                                     <input type="tel" placeholder="İletişim No" className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 text-[12px] transition-all" value={form.telefon} onChange={e => setForm({...form, telefon: e.target.value})} />
-                                    <textarea placeholder="Adres Notu" className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3.5 font-semibold outline-none focus:ring-4 focus:ring-indigo-100 h-24 text-[12px] transition-all" value={form.adres} onChange={e => setForm({...form, adres: e.target.value})} />
                                     <button type="submit" className="w-full text-white py-4 rounded-xl font-bold uppercase shadow-xl active:scale-95 transition-all text-[12px] tracking-widest mt-2" style={{ backgroundColor: theme }}>LİSTEYE KAYDET</button>
                                 </form>
                             </div>
