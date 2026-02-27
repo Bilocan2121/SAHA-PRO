@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v34.0 - Dev Operasyon Merkezi</title>
+    <title>Saha Pro v35.0 - Profesyonel Yönetim</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -200,20 +200,20 @@
             ];
 
             const loadInitialData = useCallback(() => {
-                // EXCEL'DEN GELEN TÜM GERÇEK ÜNVANLAR (TEK TEK EKLENDİ)
+                // EXCEL'DEN GELEN TÜM GERÇEK ÜNVANLAR
                 const realExcelList = [
-                    { b: 'Dalaman', n: '4 YOL TEKNOLOJİ', a: 'Dalaman Merkez' },
-                    { b: 'Fethiye', n: 'AAA PARAKENDE', a: 'Fethiye Çarşı' },
-                    { b: 'Fethiye', n: 'AAA PARAKENDE TL', a: 'Fethiye Merkez' },
+                    { b: 'Dalaman', n: '4 YOL TEKNOLOJİ', a: 'Dalaman' },
+                    { b: 'Fethiye', n: 'AAA PARAKENDE', a: 'Fethiye' },
+                    { b: 'Fethiye', n: 'AAA PARAKENDE TL', a: 'Fethiye' },
                     { b: 'Fethiye', n: 'AAAA MÜŞTERİ DOLAR', a: 'Fethiye' },
-                    { b: 'Ortaca', n: 'ACARLAR AKKUŞ İLETİŞİM', a: 'Ortaca Çarşı' },
-                    { b: 'Ortaca', n: 'ACARLAR HAKAN', a: 'Ortaca Bölgesi' },
-                    { b: 'Yatağan', n: 'YATAĞAN GÖKHAN İLETSİM', a: 'Yatağan Merkez' },
-                    { b: 'Yatağan', n: 'YATAĞAN SONER İLETİŞİM', a: 'Yatağan Çarşı' },
-                    { b: 'Yatağan', n: 'YATAĞAN TELEKOM', a: 'Yatağan Bölgesi' },
-                    { b: 'Yatağan', n: 'YATAĞAN YASEMİN', a: 'Yatağan Mevkii' },
+                    { b: 'Ortaca', n: 'ACARLAR AKKUŞ İLETİŞİM', a: 'Ortaca' },
+                    { b: 'Ortaca', n: 'ACARLAR HAKAN', a: 'Ortaca' },
+                    { b: 'Yatağan', n: 'YATAĞAN GÖKHAN İLETSİM', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN SONER İLETİŞİM', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN TELEKOM', a: 'Yatağan' },
+                    { b: 'Yatağan', n: 'YATAĞAN YASEMİN', a: 'Yatağan' },
                     { b: 'Yatağan', n: 'YATAĞAN YİĞİT MAKSİ', a: 'Yatağan', t: '05544585656' },
-                    { b: 'Gölhisar', n: 'YAVUZ ARABACI', a: 'Gölhisar/Burdur', t: '05389725817' },
+                    { b: 'Gölhisar', n: 'YAVUZ ARABACI', a: 'Gölhisar' },
                     { b: 'Bodrum', n: 'YELKEN İLETİŞİM', a: 'Gümbet mah. BODRUM/MUĞLA', t: '05389725817' },
                     { b: 'Beyobası', n: 'DUYGU İLETİŞİM', a: 'Beyobası Mevkii', vip: true },
                     { b: 'Fethiye', n: 'NAZ GENÇ TELEKOM', a: 'Atatürk Cad. No:50', t: '05415440909' },
@@ -227,8 +227,8 @@
                     { b: 'Marmaris', n: 'MARMARİS CEP TAMİR', a: 'Tepe Mah. Yeniyol Cad. No:17/B', t: '05465351501' },
                     { b: 'Seydikemer', n: 'SAĞLAM İLETİŞİM', a: 'Cumhuriyet Mah. No: 5', t: '05050504848' },
                     { b: 'Bodrum', n: 'GSM HOSPITAL', a: 'Gümbet Mah. No:1', t: '05396807242' },
-                    { b: 'Gölköy', n: 'GÖL İLETİŞİM', a: 'Bodrum Gölköy', t: '05318824848' },
-                    { b: 'Acıpayam', n: 'ACIPAYAM YILDIZ İLETİŞİM', a: 'Acıpayam Merkez', t: '05XXXXXXXXX' }
+                    { b: 'Gölköy', n: 'GÖL İLETİŞİM', a: 'Gölköy Çarşı', t: '05318824848' },
+                    { b: 'Acıpayam', n: 'ACIPAYAM YILDIZ İLETİŞİM', a: 'Acıpayam', t: '' }
                 ];
 
                 const previous400BaseNames = [
@@ -248,15 +248,15 @@
                     vip: item.vip || false
                 }));
 
-                // GERİ KALAN 1690'A KADAR OLAN KAYITLARI GERÇEKÇİ ÜNVANLARLA TAMAMLA
+                // 1690'a tamamla (Saha Kaydı yazılarını sildik)
                 for (let i = 0; i < (1690 - initial.length); i++) {
                     const reg = regions[i % regions.length];
                     const name = previous400BaseNames[i % previous400BaseNames.length];
                     initial.push({
                         id: 5000 + i,
                         bolge: reg,
-                        bayi: `${reg.toUpperCase()} ${name.toUpperCase()} - SAHA KAYDI`,
-                        adres: `${reg} Bölgesi Kayıtlı Adres`,
+                        bayi: `${reg.toUpperCase()} ${name.toUpperCase()}`,
+                        adres: `${reg} Bölgesi`,
                         telefon: `05${Math.floor(200000000 + Math.random() * 800000000)}`,
                         durum: 'Bekliyor'
                     });
@@ -265,10 +265,10 @@
             }, []);
 
             useEffect(() => {
-                // v34.0 - MASTER RESET (FORCE NEW NAMES)
-                const storageKey = 'saha_pro_v34_final_db_store';
+                // v35.0 - FORCE DATABASE REFRESH
+                const storageKey = 'saha_pro_v35_final_storage';
                 const saved = localStorage.getItem(storageKey);
-                const savedTheme = localStorage.getItem('saha_pro_theme_v34');
+                const savedTheme = localStorage.getItem('saha_pro_theme_v35');
                 if (savedTheme) setTheme(savedTheme);
                 
                 if (saved) {
@@ -279,8 +279,8 @@
             }, [loadInitialData]);
 
             useEffect(() => {
-                if (data.length > 0) localStorage.setItem('saha_pro_v34_final_db_store', JSON.stringify(data));
-                localStorage.setItem('saha_pro_theme_v34', theme);
+                if (data.length > 0) localStorage.setItem('saha_pro_v35_final_storage', JSON.stringify(data));
+                localStorage.setItem('saha_pro_theme_v35', theme);
             }, [data, theme]);
 
             const allRegions = useMemo(() => [...new Set(data.map(item => item.bolge))].sort(), [data]);
@@ -301,10 +301,10 @@
             }, [data]);
 
             const resetData = () => {
-                if(confirm('Tüm verileri silip Excel listesini sıfırdan yüklemek istiyor musun?')) {
+                if(confirm('Tüm listeyi Excel ünvanlarıyla sıfırdan yüklemek istiyor musun?')) {
                     const fresh = loadInitialData();
                     setData(fresh);
-                    localStorage.setItem('saha_pro_v34_final_db_store', JSON.stringify(fresh));
+                    localStorage.setItem('saha_pro_v35_final_storage', JSON.stringify(fresh));
                     window.location.reload();
                 }
             };
@@ -314,24 +314,23 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `saha-pro-v34-yedek.json`;
+                a.download = `saha-pro-yedek-v35.json`;
                 a.click();
             };
 
             return (
                 <div className="min-h-screen flex flex-col pb-24">
-                    {/* Dev Header v34.0 */}
+                    {/* Compact Header v35.0 */}
                     <div className="app-header px-5 pb-5 shadow-lg sticky top-0 z-40 transition-colors duration-500" style={{ backgroundColor: theme }}>
                         <div className="max-w-xl mx-auto flex flex-col gap-4 pt-10">
                             <div className="flex justify-between items-center text-white">
                                 <div className="flex items-center gap-3">
                                     <div className="app-logo" onClick={resetData}>
-                                        {/* LOGO ALANI: Kendi logonuzu eklemek için <Icon> yerine <img src="logo.png"> yazabilirsiniz */}
                                         <Icon name="logo" size={24} style={{ color: theme }} />
                                     </div>
                                     <div className="min-w-0">
-                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v34.0</span></h1>
-                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} GERÇEK KAYITLI MÜŞTERİ</p>
+                                        <h1 className="text-base font-extrabold tracking-tight uppercase leading-none italic">SAHA PRO <span className="font-light opacity-60 ml-0.5 not-italic uppercase">v35.0</span></h1>
+                                        <p className="text-[9px] font-semibold opacity-70 uppercase tracking-widest mt-1.5">{data.length} KAYITLI PORTFÖY</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-xl border border-white/5 shadow-inner">
@@ -353,7 +352,7 @@
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"><Icon name="search" size={14} /></div>
                                     <input 
                                         type="text" 
-                                        placeholder="Gerçek dükkan ismi veya numara ara..." 
+                                        placeholder="Ünvan veya numara ara..." 
                                         className="w-full bg-white/10 border border-white/20 text-white placeholder-white/30 rounded-xl py-2.5 pl-9 pr-4 outline-none focus:bg-white/20 text-xs font-medium transition-all shadow-inner" 
                                         value={searchTerm} 
                                         onChange={(e) => setSearchTerm(e.target.value)} 
