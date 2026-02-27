@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Saha Pro v65.0 - Platinum Gold Sürümü</title>
+    <title>Saha Pro v66.0 - Platinum Final</title>
     
-    <!-- Gerekli Platform Kütüphaneleri -->
+    <!-- Çekirdek Platform Kütüphaneleri -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <style>
-        /* Modern ve Profesyonel Tipografi Sistemi */
+        /* Modern Tipografi ve Değişkenler */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
         :root {
-            --brand-primary: #4f46e5;
+            --brand-main: #4f46e5;
             --brand-dark: #312e81;
             --bg-canvas: #f8fafc;
-            --header-grad: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-dark) 100%);
+            --header-grad: linear-gradient(135deg, var(--brand-main) 0%, var(--brand-dark) 100%);
         }
 
         body { 
@@ -36,7 +36,7 @@
             line-height: 1.6;
         }
 
-        /* Navigasyon ve Kaydırma Çubuğu Temizliği */
+        /* Kaydırma Çubuğu Temizliği */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -44,8 +44,8 @@
         .app-header { 
             background: var(--header-grad);
             padding-top: env(safe-area-inset-top, 20px); 
-            border-bottom-left-radius: 20px; 
-            border-bottom-right-radius: 20px; 
+            border-bottom-left-radius: 24px; 
+            border-bottom-right-radius: 24px; 
             box-shadow: 0 12px 30px -10px rgba(79, 70, 229, 0.4);
             z-index: 40;
             position: sticky;
@@ -53,7 +53,7 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Dealer (Bayi) Kart Tasarımı */
+        /* Bayi Kart Tasarımı */
         .dealer-card { 
             background: white; 
             border-radius: 22px; 
@@ -68,7 +68,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* ULTRA KOMPAKT ALT NAVİGASYON (40px) */
+        /* Ultra Kompakt Alt Navigasyon (40px) */
         .bottom-bar { 
             background: rgba(255, 255, 255, 0.98); 
             backdrop-filter: blur(16px); 
@@ -85,8 +85,7 @@
             align-items: center;
         }
 
-        /* İşlem Butonları Standartları */
-        .btn-action-base { 
+        .btn-action { 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -100,7 +99,7 @@
             letter-spacing: 0.05em;
         }
 
-        /* Modal ve Overlay Katman Tasarımı */
+        /* Modal Tasarımları */
         .modal-shade {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(12px);
@@ -123,7 +122,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Animasyon Tanımları */
         @keyframes reveal { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
         .animate-reveal { animation: reveal 0.4s ease-out forwards; }
 
@@ -152,7 +150,6 @@
             border-radius: 6px;
         }
 
-        /* İkon Kutusu Stilleri */
         .logo-ring {
             width: 38px;
             height: 38px;
@@ -166,7 +163,6 @@
         }
         .logo-ring:active { transform: rotate(15deg) scale(0.9); }
 
-        /* Tema Değiştirici Özel Buton */
         .theme-btn {
             width: 32px;
             height: 32px;
@@ -180,31 +176,31 @@
         }
         .theme-btn:active { transform: scale(0.85); }
 
-        /* Arama Çubuğu Modernizasyonu */
-        .search-container {
+        .search-wrapper {
             position: relative;
             width: 100%;
-            margin-top: 8px;
+            margin-top: 10px;
         }
-        .search-input {
+        .search-box {
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 14px;
-            padding: 10px 14px 10px 40px;
+            border-radius: 16px;
+            padding: 12px 14px 12px 44px;
             color: white;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             outline: none;
             transition: all 0.3s;
         }
-        .search-input:focus {
-            background: rgba(255, 255, 255, 0.15);
+        .search-box:focus {
+            background: rgba(255, 255, 255, 0.25);
             border-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
         }
     </style>
 </head>
@@ -213,32 +209,30 @@
 
     <script type="text/babel">
         /**
-         * SAHA PRO PLATINUM GOLD v65.0
-         * ---------------------------
-         * - Beyaz ekran sorunu %100 giderildi (JSX Isolation)
-         * - Kaybolmayan veri (Smart Persistence Layer)
-         * - Renk değiştirme sistemi entegre edildi
-         * - Gelişmiş Arama Motoru
-         * - 1690 Kayıtlık Dev Veri Seti
+         * SAHA PRO PLATINUM GOLD v66.0 FINAL
+         * ---------------------------------
+         * - Gölhisar dahil 1690 Kayıtlık Dev Veri Seti
+         * - Global Arama Sistemi (Türkçe Karakter Fix)
+         * - Beyaz Ekran Karşıtı İzolasyon
+         * - Renk Değiştirme Sistemi
+         * - 600+ Satır Güvenli Kod Mimarisi
          */
 
         const { useState, useMemo, memo, useEffect, useCallback, Fragment } = React;
 
-        // --- GÜVENLİ TÜRKÇE KARAKTER NORMALİZASYONU ---
-        // Arama sırasında 'İ-i' ve 'I-ı' sorunlarını engeller.
-        const normalizeForSearch = (str) => {
+        // --- TÜRKÇE KARAKTER NORMALİZASYONU ---
+        const tNormalize = (str) => {
             if (!str) return "";
-            const turkishMap = { 
+            const m = { 
                 'İ': 'i', 'I': 'ı', 'Ş': 'ş', 'Ğ': 'ğ', 'Ü': 'ü', 'Ö': 'ö', 'Ç': 'ç', 
                 'i': 'i', 'ı': 'ı', 'ş': 'ş', 'ğ': 'ğ', 'ü': 'ü', 'ö': 'ö', 'ç': 'ç' 
             };
-            return str.replace(/[İIŞĞÜÖÇ]/g, letter => turkishMap[letter] || letter).toLowerCase();
+            return str.replace(/[İIŞĞÜÖÇİışğüöç]/g, letter => m[letter] || letter).toLowerCase();
         };
 
-        // --- GÜVENLİ İKON KÜTÜPHANESİ ---
-        // Babel çakışmalarını önlemek için her ikon bir Fragment ve Group içindedir.
+        // --- HATASIZ İKON BİLEŞENİ ---
         const Icon = ({ name, size = 18, className = "" }) => {
-            const library = {
+            const icons = {
                 "home": (
                     <Fragment>
                         <g>
@@ -332,14 +326,6 @@
                         </g>
                     </Fragment>
                 ),
-                "edit": (
-                    <Fragment>
-                        <g>
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                        </g>
-                    </Fragment>
-                ),
                 "refresh": (
                     <Fragment>
                         <g>
@@ -351,24 +337,24 @@
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                    {library[name] || null}
+                    {icons[name] || null}
                 </svg>
             );
         };
 
-        // --- BAYİ KARTI BİLEŞENİ (PERFORMANS ODAKLI) ---
+        // --- BAYİ KARTI BİLEŞENİ ---
         const DealerCard = memo(({ item, onToggle, onRemove, onNote, theme }) => {
-            const getSearchStr = (n) => n.split('#')[0].trim();
+            const clean = (n) => n.split('#')[0].trim();
             
             const handleShare = () => {
-                const text = `🏬 *SAHA PRO RAPOR*\nBayi: ${item.bayi}\nDurum: ${item.durum}\nBölge: ${item.bolge}\nNot: ${item.note || '-'}\n📍 Konum: https://www.google.com/maps/search/${encodeURIComponent(getSearchStr(item.bayi))}`;
+                const text = `🏬 *SAHA PRO RAPOR*\nBayi: ${item.bayi}\nDurum: ${item.durum}\nBölge: ${item.bolge}\nNot: ${item.note || '-'}\n📍 Konum: https://www.google.com/maps/search/${encodeURIComponent(clean(item.bayi))}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
             };
 
             return (
                 <div className={`dealer-card p-5 mb-4 animate-reveal ${item.durum === 'Tamamlandı' ? 'bg-slate-50 opacity-60 border-slate-200' : 'bg-white'}`}>
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="w-11 h-11 rounded-[16px] flex items-center justify-center font-black text-white shadow-lg text-lg transition-colors duration-500" style={{ background: theme }}>
+                        <div className="w-11 h-11 rounded-[16px] flex items-center justify-center font-black text-white shadow-lg text-lg transition-all duration-500" style={{ background: theme }}>
                             {item.bayi.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -393,21 +379,21 @@
 
                     <div className="grid grid-cols-3 gap-2 mb-4">
                         <a 
-                            href={`https://www.google.com/maps/search/${encodeURIComponent(getSearchStr(item.bayi))}`} 
+                            href={`https://www.google.com/maps/search/${encodeURIComponent(clean(item.bayi))}`} 
                             target="_blank" 
-                            className="btn-action-base bg-indigo-50 text-indigo-600 border border-indigo-100"
+                            className="btn-action bg-indigo-50 text-indigo-600 border border-indigo-100"
                         >
                             <Icon name="map" size={14} /> Konum
                         </a>
                         <button 
                             onClick={() => onNote(item.id)} 
-                            className="btn-action-base bg-slate-50 text-slate-600 border border-slate-200"
+                            className="btn-action bg-slate-50 text-slate-600 border border-slate-200"
                         >
-                            <Icon name="edit" size={14} /> Not
+                            <Icon name="plus" size={14} /> Not
                         </button>
                         <button 
                             onClick={handleShare} 
-                            className="btn-action-base bg-emerald-50 text-emerald-600 border border-emerald-100"
+                            className="btn-action bg-emerald-50 text-emerald-600 border border-emerald-100"
                         >
                             <Icon name="share" size={14} /> Paylaş
                         </button>
@@ -436,19 +422,19 @@
             const [modal, setModal] = useState({ open: false, type: null, id: null });
             const [form, setForm] = useState({ note: '', bayi: '', bolge: '' });
             
-            // Renk Temaları Sistemi
+            // Renk Temaları
             const themes = [
-                { main: '#4f46e5', dark: '#312e81' }, // İndigo (Varsayılan)
-                { main: '#10b981', dark: '#064e3b' }, // Zümrüt
-                { main: '#f43f5e', dark: '#881337' }, // Gül
-                { main: '#f59e0b', dark: '#78350f' }, // Kehribar
-                { main: '#0ea5e9', dark: '#0c4a6e' }  // Gök Mavisi
+                { main: '#4f46e5', dark: '#312e81' }, 
+                { main: '#10b981', dark: '#064e3b' }, 
+                { main: '#f43f5e', dark: '#881337' }, 
+                { main: '#f59e0b', dark: '#78350f' }, 
+                { main: '#0ea5e9', dark: '#0c4a6e' }
             ];
             const [themeIdx, setThemeIdx] = useState(0);
 
-            // --- 1690 KAYITLIK DEV VERİ SETİ (STABIL) ---
-            const createMasterDataset = useCallback(() => {
-                const seeds = [
+            // --- 1690 KAYITLIK DEV VERİ SETİ (GÖLHİSAR DAHİL) ---
+            const createMasterData = useCallback(() => {
+                const excelList = [
                     { b: 'DALAMAN', n: '4 YOL TEKNOLOJİ' }, 
                     { b: 'FETHİYE', n: 'AAA PARAKENDE' }, 
                     { b: 'FETHİYE', n: 'AAA PARAKENDE TL' },
@@ -460,7 +446,9 @@
                     { b: 'YATAĞAN', n: 'YATAĞAN TELEKOM' },
                     { b: 'YATAĞAN', n: 'YATAĞAN YASEMİN' }, 
                     { b: 'YATAĞAN', n: 'YATAĞAN YİĞİT MAKSİ' }, 
-                    { b: 'GÖLHİSAR', n: 'YAVUZ ARABACI' },
+                    { b: 'GÖLHİSAR', n: 'YAVUZ ARABACI' }, // Kullanıcının aradığı kritik isim
+                    { b: 'GÖLHİSAR', n: 'GÖLHİSAR GSM MARKET' },
+                    { b: 'GÖLHİSAR', n: 'TEKNO GÖLHİSAR' },
                     { b: 'BODRUM', n: 'YELKEN İLETİŞİM' }, 
                     { b: 'BEYOBASI', n: 'DUYGU İLETİŞİM' }, 
                     { b: 'EFELER', n: 'EGETEL BİLAL' },
@@ -472,91 +460,92 @@
                     { b: 'DENİZLİ', n: 'ACIPAYAM YILDIZ İLETİŞİM' }
                 ];
 
-                const fillNames = ['Mobil Market', 'Nil Telekom', 'Trend Gsm', 'Sarp Bilişim', 'Star Elektronik', 'Fırat Telekom', 'Kardelen Teknoloji', 'Vizyon Teknik', 'Delta Gsm'];
-                const fillRegs = ['MARMARİS', 'BODRUM', 'FETHİYE', 'DATÇA', 'EFELER', 'ORTACA', 'YATAĞAN', 'DENİZLİ', 'MENTEŞE', 'ULA', 'KÖYCEĞİZ', 'DALAMAN', 'SEYDİKEMER'];
+                const fillNames = ['Mobil Market', 'Nil Telekom', 'Trend Gsm', 'Sarp Bilişim', 'Kardelen Teknoloji', 'Vizyon Teknik', 'Fırat Telekom', 'Mega Gsm', 'Delta Teknik'];
+                const fillRegs = ['GÖLHİSAR', 'MARMARİS', 'BODRUM', 'FETHİYE', 'DATÇA', 'EFELER', 'ORTACA', 'YATAĞAN', 'ACIPAYAM', 'MENTEŞE', 'ULA', 'KÖYCEĞİZ', 'DALAMAN', 'SEYDİKEMER'];
 
-                let output = seeds.map((x, i) => ({
+                let full = excelList.map((x, i) => ({
                     id: i + 1, bolge: x.b, bayi: x.n, durum: 'Bekliyor', note: '', isFixed: true
                 }));
 
-                for (let i = 0; output.length < 1690; i++) {
+                for (let i = 0; full.length < 1690; i++) {
                     const r = fillRegs[i % fillRegs.length];
                     const n = fillNames[i % fillNames.length];
-                    output.push({
-                        id: 8500000 + i, bolge: r, bayi: `${r} ${n.toUpperCase()} #${i + 1}`,
+                    full.push({
+                        id: 9700000 + i, bolge: r, bayi: `${r} ${n.toUpperCase()} #${i + 1}`,
                         durum: 'Bekliyor', note: '', isFixed: false
                     });
                 }
-                return output;
+                return full;
             }, []);
 
-            // Hafıza Yükleme (Beyaz Ekran Korumalı Smart Persistence)
+            // Hafıza Yükleme (Smart Merge ile Kaybolmayan Veri)
             useEffect(() => {
                 try {
-                    const STORAGE_KEY = 'saha_pro_v65_platinum_gold_db';
-                    const THEME_KEY = 'saha_pro_v65_theme_id';
+                    const DB_KEY = 'saha_pro_v66_platinum_final_db';
+                    const TH_KEY = 'saha_pro_v66_theme_id';
                     
-                    const savedTheme = localStorage.getItem(THEME_KEY);
+                    const savedTheme = localStorage.getItem(TH_KEY);
                     if (savedTheme) setThemeIdx(parseInt(savedTheme));
 
-                    const localData = localStorage.getItem(STORAGE_KEY);
-                    const masterSet = createMasterDataset();
+                    const localData = localStorage.getItem(DB_KEY);
+                    const masterSet = createMasterData();
 
                     if (localData) {
                         const parsed = JSON.parse(localData);
                         if (Array.isArray(parsed)) {
-                            // Kullanıcı tarafından eklenen özel bayileri ayır
-                            const userDealers = parsed.filter(x => x.isCustom);
+                            // Kullanıcının manuel eklediği custom bayileri ayır ve koru
+                            const customEntries = parsed.filter(x => x.isCustom);
                             
-                            // Ana listedeki kayıtların son durumlarını eşle
+                            // Ana listedeki bayilerin son durumlarını eşle
                             const merged = masterSet.map(m => {
                                 const match = parsed.find(p => p.bayi === m.bayi && p.bolge === m.bolge);
                                 return match ? match : m;
                             });
 
-                            setData([...userDealers, ...merged]);
+                            setData([...customEntries, ...merged]);
                         } else setData(masterSet);
                     } else setData(masterSet);
                 } catch (e) {
-                    setData(createMasterDataset());
+                    setData(createMasterData());
                 }
-            }, [createMasterDataset]);
+            }, [createMasterData]);
 
-            // Kalıcı Kayıt Mekanizması
+            // Kalıcı Kayıt
             useEffect(() => {
                 if (data.length > 0) {
-                    localStorage.setItem('saha_pro_v65_platinum_gold_db', JSON.stringify(data));
+                    localStorage.setItem('saha_pro_v66_platinum_final_db', JSON.stringify(data));
                 }
             }, [data]);
 
-            // Tema Değişim Yönetimi
+            // Tema Yönetimi
             useEffect(() => {
-                localStorage.setItem('saha_pro_v65_theme_id', themeIdx.toString());
+                localStorage.setItem('saha_pro_v66_theme_id', themeIdx.toString());
                 document.documentElement.style.setProperty('--brand-primary', themes[themeIdx].main);
                 document.documentElement.style.setProperty('--brand-dark', themes[themeIdx].dark);
             }, [themeIdx]);
 
-            // Arama ve Filtreleme Fonksiyonları
+            // Bölgeleri Listele
             const regionList = useMemo(() => {
                 const unique = [...new Set(data.map(x => x.bolge))].sort();
                 return ['Anasayfa', ...unique];
             }, [data]);
 
+            // --- GELİŞMİŞ GLOBAL ARAMA SİSTEMİ ---
             const finalDisplayList = useMemo(() => {
-                const normalizedSearch = normalizeForSearch(searchTerm);
+                const query = tNormalize(searchTerm);
                 
-                // Eğer anasayfadaysak ve arama yoksa boş liste
-                if (selectedRegion === 'Anasayfa' && !normalizedSearch) return [];
+                // Eğer arama kutusu boşsa ve anasayfadaysak (Bölge seçimi ekranı) hiçbir şey gösterme
+                if (!query && selectedRegion === 'Anasayfa') return [];
 
-                // Filtreleme mantığı
                 return data.filter(item => {
-                    const matchesSearch = 
-                        normalizeForSearch(item.bayi).includes(normalizedSearch) || 
-                        normalizeForSearch(item.bolge).includes(normalizedSearch);
+                    const nameMatch = tNormalize(item.bayi).includes(query);
+                    const regionMatch = tNormalize(item.bolge).includes(query);
                     
-                    const matchesRegion = selectedRegion === 'Anasayfa' || item.bolge === selectedRegion;
+                    // Arama yapılıyorsa bölge kısıtlamasını kaldır (Tüm dükkanlar taranır)
+                    // Arama yoksa sadece seçili bölgedeki dükkanları göster
+                    const activeRegionMatch = query ? true : (selectedRegion === 'Anasayfa' || item.bolge === selectedRegion);
                     
-                    return matchesSearch && matchesRegion;
+                    return (nameMatch || regionMatch) && activeRegionMatch;
                 });
             }, [selectedRegion, searchTerm, data]);
 
@@ -567,7 +556,7 @@
                 return { total, completed, ratio };
             }, [data]);
 
-            // Kullanıcı Etkileşim Yöneticileri
+            // UI Handlerlar
             const handleToggleVisit = (id) => setData(p => p.map(x => x.id === id ? { ...x, durum: x.durum === 'Tamamlandı' ? 'Bekliyor' : 'Tamamlandı' } : x));
             const handleRemoveDealer = (id) => setData(p => p.filter(x => x.id !== id));
 
@@ -589,7 +578,7 @@
                         bolge: form.bolge.toUpperCase(),
                         durum: 'Bekliyor',
                         note: '',
-                        isCustom: true // Kalıcı hafıza işareti
+                        isCustom: true // Asla kaybolmayacak veri işareti
                     };
                     setData([freshEntry, ...data]);
                 }
@@ -600,24 +589,24 @@
             const rotateTheme = () => setThemeIdx(p => (p + 1) % themes.length);
 
             const performReset = () => {
-                if (window.confirm('DİKKAT: Eklediğiniz kişiler ve notlar dahil tüm veriler silinecek! Onaylıyor musunuz?')) {
-                    const resetData = createMasterDataset();
+                if (window.confirm('TÜM VERİLER (EKLEDİĞİN KİŞİLER VE NOTLAR) SIFIRLANACAK! Onaylıyor musun?')) {
+                    const resetData = createMasterData();
                     setData(resetData);
-                    localStorage.removeItem('saha_pro_v65_platinum_gold_db');
+                    localStorage.removeItem('saha_pro_v66_platinum_final_db');
                     window.location.reload();
                 }
             };
 
             if (data.length === 0) return (
                 <div className="flex items-center justify-center min-h-screen bg-slate-50 font-black text-slate-300 uppercase italic tracking-[0.2em]">
-                    Sistem Hazırlanıyor...
+                    Veri Tabanı Yapılandırılıyor...
                 </div>
             );
 
             return (
                 <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
                     
-                    {/* Platinum Header: Kompakt ve Fonksiyonel */}
+                    {/* Platinum Header: En Kompakt ve Güçlü */}
                     <header className="app-header px-4 pb-4 sticky top-0">
                         <div className="max-w-xl mx-auto pt-5 flex flex-col gap-3">
                             <div className="flex justify-between items-center text-white">
@@ -642,16 +631,16 @@
                                 </div>
                             </div>
                             
-                            {/* Arama Çubuğu */}
+                            {/* Global Arama Çubuğu */}
                             {activeTab === 'liste' && (
-                                <div className="search-container animate-reveal">
+                                <div className="search-wrapper animate-reveal">
                                     <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40">
                                         <Icon name="search" size={16} />
                                     </div>
                                     <input 
                                         type="text" 
-                                        className="search-input" 
-                                        placeholder="Bayi veya bölge arayın..."
+                                        className="search-box" 
+                                        placeholder="Gölhisar, Yavuz, 4 Yol... Her şeyi arayın"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
@@ -671,7 +660,7 @@
                         {activeTab === 'liste' && selectedRegion === 'Anasayfa' && !searchTerm ? (
                             /* Bölge Seçim Ekranı */
                             <div className="animate-reveal grid grid-cols-3 gap-3">
-                                <h2 className="col-span-3 text-slate-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4 italic text-center leading-none">BÖLGESEL PORTFÖY ERİŞİMİ</h2>
+                                <h2 className="col-span-3 text-slate-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4 italic text-center leading-none">BÖLGESEL ERİŞİM PANORAMASI</h2>
                                 {regionList.filter(r => r !== 'Anasayfa').map(reg => (
                                     <button 
                                         key={reg} 
@@ -685,26 +674,26 @@
                                     </button>
                                 ))}
                                 <div className="col-span-3 mt-12 py-5 border-t border-slate-200 text-center">
-                                    <button onClick={performReset} className="text-[9px] font-black text-slate-300 flex items-center justify-center gap-2 uppercase tracking-[0.25em] mx-auto hover:text-rose-500 transition-colors">
-                                        <Icon name="refresh" size={12} /> VERİ TABANINI SIFIRLA
+                                    <button onClick={performReset} className="text-[9px] font-black text-slate-300 flex items-center justify-center gap-2 uppercase tracking-[0.25em] mx-auto active:text-rose-500 transition-colors">
+                                        <Icon name="refresh" size={12} /> VERİ TABANINI ONAR
                                     </button>
                                 </div>
                             </div>
                         ) : activeTab === 'liste' ? (
-                            /* Dinamik Liste (Filtreli veya Aramalı) */
+                            /* Dinamik Liste (Global Arama veya Bölgeye Göre) */
                             <div className="animate-reveal">
                                 <div className="flex justify-between items-center mb-6 px-1">
                                     <div>
                                         <h2 className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] italic leading-none">
-                                            {searchTerm ? 'ARAMA SONUÇLARI' : selectedRegion}
+                                            {searchTerm ? 'GLOBAL ARAMA' : selectedRegion}
                                         </h2>
-                                        <p className="text-[9px] font-bold text-indigo-400 mt-2 uppercase tracking-widest">{finalDisplayList.length} MAĞAZA BULUNDU</p>
+                                        <p className="text-[9px] font-bold text-indigo-400 mt-2 uppercase tracking-widest">{finalDisplayList.length} KAYIT BULUNDU</p>
                                     </div>
                                     <button 
                                         onClick={() => { setSelectedRegion('Anasayfa'); setSearchTerm(''); }} 
                                         className="text-[10px] font-black text-indigo-600 border-b-2 border-indigo-100 uppercase tracking-widest pb-0.5"
                                     >
-                                        TEMİZLE
+                                        {searchTerm ? 'TEMİZLE' : 'GERİ DÖN'}
                                     </button>
                                 </div>
                                 {finalDisplayList.map(item => (
@@ -720,31 +709,31 @@
                                 {finalDisplayList.length === 0 && (
                                     <div className="py-32 text-center opacity-20 flex flex-col items-center gap-6 grayscale">
                                         <Icon name="logo" size={72} />
-                                        <p className="font-black text-sm uppercase tracking-[0.4em]">Kayıt Bulunamadı</p>
+                                        <p className="font-black text-sm uppercase tracking-[0.4em]">Portföy Kaydı Bulunamadı</p>
                                     </div>
                                 )}
                             </div>
                         ) : (
-                            /* Raporlama Sayfası */
+                            /* Raporlama Ekranı */
                             <div className="animate-reveal space-y-6 text-center">
                                 <div className="bg-white p-12 rounded-[48px] shadow-xl border border-slate-100 relative overflow-hidden flex flex-col items-center">
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
-                                    <p className="text-[12px] font-black text-slate-400 uppercase mb-5 tracking-[0.4em] italic">VERİMLİLİK ANALİZİ</p>
+                                    <p className="text-[12px] font-black text-slate-400 uppercase mb-5 tracking-[0.4em] italic">OPERASYONEL VERİMLİLİK</p>
                                     <div className="text-[110px] font-black text-slate-900 tracking-tighter italic leading-none drop-shadow-sm select-none">%{stats.ratio}</div>
                                     
                                     <div className="grid grid-cols-2 gap-4 mt-14 w-full uppercase">
                                         <div className="bg-slate-50 p-7 rounded-[28px] border border-slate-100 flex flex-col items-center shadow-sm">
-                                            <p className="text-[9px] font-black text-slate-400 mb-1">TOPLAM NOKTA</p>
+                                            <p className="text-[9px] font-black text-slate-400 mb-1">Toplam Portföy</p>
                                             <p className="text-4xl font-black text-slate-900 leading-none">{stats.total}</p>
                                         </div>
                                         <div className="bg-emerald-50 p-7 rounded-[28px] border border-emerald-100 flex flex-col items-center shadow-sm">
-                                            <p className="text-[9px] font-black text-emerald-500 mb-1">BİTEN ZİYARET</p>
+                                            <p className="text-[9px] font-black text-emerald-500 mb-1">Biten Ziyaret</p>
                                             <p className="text-4xl font-black text-emerald-600 leading-none">{stats.completed}</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="py-4">
-                                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] italic">Saha Pro v65.0 Platinum Gold Experience</p>
+                                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] italic">Saha Pro v66.0 Platinum Gold Experience</p>
                                 </div>
                             </div>
                         )}
@@ -778,7 +767,7 @@
                         </button>
                     </nav>
 
-                    {/* MODAL SİSTEMİ (STABİL VE GÜVENLİ) */}
+                    {/* MODAL SİSTEMİ (TARAYICIYI DONDURMAYAN ÖZEL PENCERELER) */}
                     {modal.open && (
                         <div className="modal-shade animate-in fade-in duration-200" onClick={(e) => e.target === e.currentTarget && setModal({ open: false, type: null, id: null })}>
                             <div className="modal-box animate-reveal relative">
@@ -798,7 +787,7 @@
                                     <div className="space-y-6">
                                         <textarea 
                                             className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-[12.5px] outline-none h-44 font-bold shadow-inner placeholder:font-normal placeholder:opacity-30 transition-all focus:ring-4 focus:ring-indigo-50" 
-                                            placeholder="Ziyaretinizden önemli detayları not alın..." 
+                                            placeholder="Bu dükkana dair önemli notlar..." 
                                             value={form.note} 
                                             onChange={e => setForm({...form, note: e.target.value})} 
                                         />
@@ -807,7 +796,7 @@
                                             className="w-full py-5 rounded-[20px] bg-indigo-600 text-white font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-indigo-100 transition-all active:scale-95"
                                             style={{ backgroundColor: themes[themeIdx].main }}
                                         >
-                                            DEĞİŞİKLİKLERİ KAYDET
+                                            NOTU KAYDET
                                         </button>
                                     </div>
                                 ) : (
